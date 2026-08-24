@@ -1,0 +1,14 @@
+node_modules
+dist
+dist-ssr
+*.local
+
+.env
+.env.*
+!.env.example
+
+data/db.json
+
+.vercel
+
+npm-debug.log*
