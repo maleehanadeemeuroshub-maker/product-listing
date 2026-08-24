@@ -1,125 +1,76 @@
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
-import { ThemeProvider } from "./context/ThemeContext";
-import { ToastProvider } from "./context/ToastContext";
-import { AuthProvider } from "./context/AuthContext";
-import { CartProvider } from "./context/CartContext";
-import { WishlistProvider } from "./context/WishlistContext";
-import { CompareProvider } from "./context/CompareContext";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import CompareBar from "./components/CompareBar";
-import StormScene from "./components/StormScene";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Home from "./pages/Home";
-import Products from "./pages/Products";
-import ProductDetails from "./pages/ProductDetails";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import VerifyEmail from "./pages/VerifyEmail";
-import Profile from "./pages/Profile";
-import Cart from "./pages/Cart";
-import Wishlist from "./pages/Wishlist";
-import Compare from "./pages/Compare";
-import Checkout from "./pages/Checkout";
-import OrderSuccess from "./pages/OrderSuccess";
-import Orders from "./pages/Orders";
-import OrderDetails from "./pages/OrderDetails";
-import DevInbox from "./pages/DevInbox";
-
-function Layout() {
-  return (
-    <div className="flex min-h-screen flex-col">
-      <StormScene className="fixed inset-0 -z-20" brightness={0.9} opacity={1.1} />
-      <div className="fixed inset-0 -z-10 bg-base-950/55" />
-
-      <Navbar />
-      <main className="flex-1">
-        <Outlet />
-      </main>
-      <Footer />
-      <CompareBar />
-    </div>
-  );
-}
+import React from 'react';
+import Navbar from './components/layout/Navbar';
+import HeroSection from './components/showcase/HeroSection';
+import FilterSidebar from './components/showcase/FilterSidebar';
+import ProductGrid from './components/showcase/ProductGrid';
+import Footer from './components/layout/Footer';
+import CartDrawer from './components/drawers/CartDrawer';
+import WishlistDrawer from './components/drawers/WishlistDrawer';
+import CompareDrawer from './components/drawers/CompareDrawer';
+import UserProfileDrawer from './components/drawers/UserProfileDrawer';
+import ProductDetailModal from './components/modals/ProductDetailModal';
+import ARSimulatorModal from './components/modals/ARSimulatorModal';
+import AuthModal from './components/modals/AuthModal';
+import ToastContainer from './components/common/ToastContainer';
+import { Sparkles, Layers, Box, Cpu } from 'lucide-react';
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <ToastProvider>
-        <AuthProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <CompareProvider>
-                <BrowserRouter>
-                  <Routes>
-                    <Route element={<Layout />}>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/products" element={<Products />} />
-                      <Route path="/products/:id" element={<ProductDetails />} />
+    <div className="min-h-screen flex flex-col bg-[#090b10] text-slate-100 font-['Plus_Jakarta_Sans',sans-serif]">
+      {/* Top Navbar */}
+      <Navbar />
 
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/register" element={<Register />} />
-                      <Route path="/forgot-password" element={<ForgotPassword />} />
-                      <Route path="/reset-password" element={<ResetPassword />} />
-                      <Route path="/verify-email" element={<VerifyEmail />} />
+      {/* Cinematic 3D Hero Section */}
+      <HeroSection />
 
-                      <Route path="/cart" element={<Cart />} />
-                      <Route path="/wishlist" element={<Wishlist />} />
-                      <Route path="/compare" element={<Compare />} />
-                      <Route
-                        path="/checkout"
-                        element={
-                          <ProtectedRoute>
-                            <Checkout />
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route
-                        path="/order-success"
-                        element={
-                          <ProtectedRoute>
-                            <OrderSuccess />
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route
-                        path="/orders"
-                        element={
-                          <ProtectedRoute>
-                            <Orders />
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route
-                        path="/orders/:id"
-                        element={
-                          <ProtectedRoute>
-                            <OrderDetails />
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route
-                        path="/profile"
-                        element={
-                          <ProtectedRoute>
-                            <Profile />
-                          </ProtectedRoute>
-                        }
-                      />
+      {/* Main Catalog Showcase Section */}
+      <main id="catalog" className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-12">
+        
+        {/* Section Header */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-white/10">
+          <div>
+            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-cyan-400 font-semibold mb-1">
+              <Cpu className="w-3.5 h-3.5" />
+              <span>Full Interactive 3D Hardware Catalog</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold font-['Space_Grotesk'] text-white">
+              Explore Spatial Hardware
+            </h2>
+          </div>
 
-                      <Route path="/dev/inbox" element={<DevInbox />} />
+          <div className="flex items-center gap-3 text-xs font-mono text-slate-400">
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              60 FPS WebGL
+            </span>
+            <span>•</span>
+            <span className="flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-cyan-400" />
+              Exploded Teardowns
+            </span>
+          </div>
+        </div>
 
-                      <Route path="*" element={<Navigate to="/" replace />} />
-                    </Route>
-                  </Routes>
-                </BrowserRouter>
-              </CompareProvider>
-            </WishlistProvider>
-          </CartProvider>
-        </AuthProvider>
-      </ToastProvider>
-    </ThemeProvider>
+        {/* Catalog Main Layout: Filter Sidebar + Product Grid */}
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          <FilterSidebar />
+          <ProductGrid />
+        </div>
+
+      </main>
+
+      {/* Modals & Slide-over Drawers */}
+      <CartDrawer />
+      <WishlistDrawer />
+      <CompareDrawer />
+      <UserProfileDrawer />
+      <ProductDetailModal />
+      <ARSimulatorModal />
+      <AuthModal />
+      <ToastContainer />
+
+      {/* Footer */}
+      <Footer />
+    </div>
   );
 }
