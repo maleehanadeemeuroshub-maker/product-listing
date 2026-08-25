@@ -1,93 +1,97 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { registerUser, loginUser, getCurrentUser } from "../services/auth";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { loginUser } from '../services/api';
 
 const AuthContext = createContext(null);
-const STORAGE_KEY = "shoply_auth";
-
-function readStoredSession() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
-}
 
 export function AuthProvider({ children }) {
-  const [session, setSession] = useState(readStoredSession);
-  const [authLoading, setAuthLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  function persist(next) {
-    if (next) localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-    else localStorage.removeItem(STORAGE_KEY);
-    setSession(next);
-  }
-
-  // On first load, re-validate the stored token against the server so an
-  // expired/invalid session is cleared instead of silently trusted.
+  // Restore stored session on mount
   useEffect(() => {
-    if (!session?.token) {
-      setAuthLoading(false);
-      return;
+    try {
+      const storedAuth = localStorage.getItem('shoply_auth');
+      if (storedAuth) {
+        const parsed = JSON.parse(storedAuth);
+        if (parsed.token && parsed.user) {
+          setUser(parsed.user);
+          setToken(parsed.token);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to restore auth session', e);
+      localStorage.removeItem('shoply_auth');
+    } finally {
+      setIsLoading(false);
     }
-    let cancelled = false;
-    getCurrentUser()
-      .then((user) => {
-        if (!cancelled) persist({ token: session.token, user });
-      })
-      .catch(() => {
-        if (!cancelled) persist(null);
-      })
-      .finally(() => {
-        if (!cancelled) setAuthLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-    // Intentionally runs once on mount only.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function register(fullName, email, password) {
-    return registerUser({ fullName, email, password });
-  }
+  /**
+   * Log in user via DummyJSON Auth API
+   */
+  const login = async (username, password) => {
+    setIsLoading(true);
+    try {
+      const response = await loginUser({ username, password });
 
-  async function login(email, password) {
-    const data = await loginUser({ email, password });
-    persist({ token: data.token, user: data.user });
-    return data.user;
-  }
+      const userData = {
+        id: response.id,
+        username: response.username,
+        email: response.email,
+        firstName: response.firstName,
+        lastName: response.lastName,
+        gender: response.gender,
+        image: response.image,
+      };
 
-  function logout() {
-    persist(null);
-  }
+      const authToken = response.token || response.accessToken;
 
-  /** Optimistically patches the cached user (e.g. right after email verification). */
-  function updateUser(patch) {
-    setSession((prev) => {
-      if (!prev) return prev;
-      const next = { ...prev, user: { ...prev.user, ...patch } };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      return next;
-    });
-  }
+      setUser(userData);
+      setToken(authToken);
 
-  const value = {
-    user: session?.user || null,
-    token: session?.token || null,
-    isAuthenticated: Boolean(session?.token),
-    authLoading,
-    register,
-    login,
-    logout,
-    updateUser,
+      localStorage.setItem(
+        'shoply_auth',
+        JSON.stringify({ user: userData, token: authToken })
+      );
+
+      return { success: true, user: userData };
+    } catch (error) {
+      return { success: false, error: error.message };
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  /**
+   * Log out user
+   */
+  const logout = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem('shoply_auth');
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        isAuthenticated: !!token,
+        isLoading,
+        login,
+        logout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
-  return ctx;
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 }

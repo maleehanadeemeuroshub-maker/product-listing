@@ -1,28 +1,34 @@
-import { ArrowUpDown } from "lucide-react";
-
-export const SORT_OPTIONS = [
-  { value: "default", label: "Default" },
-  { value: "price-asc", label: "Price: Low to High" },
-  { value: "price-desc", label: "Price: High to Low" },
-  { value: "rating-desc", label: "Rating: High to Low" },
-  { value: "title-asc", label: "Name: A-Z" },
-  { value: "title-desc", label: "Name: Z-A" },
-];
+import React from 'react';
+import { ArrowUpDown } from 'lucide-react';
 
 export default function SortDropdown({ value, onChange }) {
   return (
-    <div className="relative">
-      <ArrowUpDown size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-base-400" />
+    <div className="flex items-center gap-2 p-1.5 px-3 rounded-2xl glass-panel border border-white/10 text-xs font-mono">
+      <ArrowUpDown className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+      <span className="text-slate-400 hidden sm:inline">Sort by:</span>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="appearance-none rounded-xl border border-overlay/8 bg-base-900 py-2.5 pl-9 pr-8 text-sm text-base-100 transition focus:border-accent-500/50 focus:outline-none focus:ring-2 focus:ring-accent-500/20"
+        className="bg-transparent text-slate-100 focus:outline-none cursor-pointer font-semibold pr-2"
       >
-        {SORT_OPTIONS.map((option) => (
-          <option key={option.value} value={option.value} className="bg-base-900">
-            {option.label}
-          </option>
-        ))}
+        <option value="default" className="bg-slate-900 text-slate-100">
+          Default Order
+        </option>
+        <option value="price-asc" className="bg-slate-900 text-slate-100">
+          Price: Low to High
+        </option>
+        <option value="price-desc" className="bg-slate-900 text-slate-100">
+          Price: High to Low
+        </option>
+        <option value="rating-desc" className="bg-slate-900 text-slate-100">
+          Rating: High to Low
+        </option>
+        <option value="title-asc" className="bg-slate-900 text-slate-100">
+          Name: A to Z
+        </option>
+        <option value="title-desc" className="bg-slate-900 text-slate-100">
+          Name: Z to A
+        </option>
       </select>
     </div>
   );

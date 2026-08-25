@@ -1,22 +1,67 @@
-export default function CategoryFilter({ categories, selected, onSelect }) {
+import React from 'react';
+import { Sparkles, Layers } from 'lucide-react';
+
+export default function CategoryFilter({
+  categories = [],
+  selectedCategory = 'all',
+  onSelectCategory,
+  isLoading = false,
+}) {
   return (
-    <div className="no-scrollbar flex items-center gap-2 overflow-x-auto pb-1">
-      {categories.map((category) => {
-        const isActive = category.slug === selected;
-        return (
+    <div className="w-full">
+      <div className="flex items-center gap-2 mb-3">
+        <Layers className="w-4 h-4 text-cyan-400" />
+        <h3 className="text-xs font-mono uppercase tracking-widest text-slate-300 font-bold">
+          Categories
+        </h3>
+      </div>
+
+      {isLoading ? (
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="h-8 w-24 rounded-xl bg-slate-800/60 animate-pulse shrink-0"
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          {/* "All" Option */}
           <button
-            key={category.slug}
-            onClick={() => onSelect(category.slug)}
-            className={`shrink-0 rounded-full border px-4 py-1.5 text-sm font-medium capitalize transition ${
-              isActive
-                ? "border-transparent bg-gradient-to-r from-accent-500 to-accent2-500 text-white shadow-md shadow-accent-500/20"
-                : "border-overlay/8 bg-base-900 text-base-300 hover:border-overlay/20 hover:text-base-100"
+            onClick={() => onSelectCategory('all')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-mono transition-all flex items-center gap-1.5 ${
+              selectedCategory === 'all'
+                ? 'bg-cyan-500 text-black font-bold shadow-md shadow-cyan-500/20 scale-105'
+                : 'glass-panel border-white/10 text-slate-300 hover:text-white hover:border-white/20'
             }`}
           >
-            {category.name}
+            <Sparkles className="w-3 h-3" />
+            <span>All Products</span>
           </button>
-        );
-      })}
+
+          {/* Dynamic Categories from DummyJSON API */}
+          {categories.map((cat) => {
+            const slug = typeof cat === 'string' ? cat : cat.slug || cat.name;
+            const name = typeof cat === 'string' ? cat : cat.name || cat.slug;
+            const isSelected = selectedCategory === slug;
+
+            return (
+              <button
+                key={slug}
+                onClick={() => onSelectCategory(slug)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-mono capitalize transition-all shrink-0 ${
+                  isSelected
+                    ? 'bg-cyan-500 text-black font-bold shadow-md shadow-cyan-500/20 scale-105'
+                    : 'glass-panel border-white/10 text-slate-400 hover:text-white hover:border-white/20'
+                }`}
+              >
+                {name.replace(/-/g, ' ')}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

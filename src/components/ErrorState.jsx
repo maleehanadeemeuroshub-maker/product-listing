@@ -1,22 +1,32 @@
-import { AlertTriangle, RotateCw } from "lucide-react";
+import React from 'react';
+import { AlertTriangle, RotateCcw } from 'lucide-react';
 
-export default function ErrorState({ message, onRetry }) {
+export default function ErrorState({
+  message = 'Failed to load products from the REST API.',
+  onRetry,
+}) {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-red-500/20 bg-red-500/5 px-6 py-16 text-center animate-fade-in">
-      <span className="flex h-14 w-14 items-center justify-center rounded-full bg-red-500/10">
-        <AlertTriangle size={26} className="text-red-400" />
-      </span>
-      <div>
-        <h3 className="text-base font-semibold text-base-100">Something went wrong</h3>
-        <p className="mt-1 max-w-sm text-sm text-base-400">{message || "Failed to load data from the server."}</p>
+    <div className="w-full py-16 px-6 rounded-3xl glass-panel border border-rose-500/30 bg-rose-950/10 text-center space-y-4 max-w-lg mx-auto my-8 shadow-2xl">
+      <div className="w-14 h-14 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto animate-bounce">
+        <AlertTriangle className="w-7 h-7" />
       </div>
+
+      <div className="space-y-1">
+        <h3 className="text-lg font-bold font-['Space_Grotesk'] text-white">
+          API Connection Error
+        </h3>
+        <p className="text-xs text-rose-200/80 font-mono leading-relaxed max-w-md mx-auto">
+          {message}
+        </p>
+      </div>
+
       {onRetry && (
         <button
           onClick={onRetry}
-          className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-accent-500 to-accent2-500 px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white font-mono font-bold text-xs shadow-lg shadow-rose-500/20 active:scale-95 transition-all"
         >
-          <RotateCw size={15} />
-          Retry
+          <RotateCcw className="w-3.5 h-3.5" />
+          <span>Retry Request</span>
         </button>
       )}
     </div>

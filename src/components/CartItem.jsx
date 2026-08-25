@@ -1,59 +1,95 @@
-import { Link } from "react-router-dom";
-import { Minus, Plus, Trash2 } from "lucide-react";
-import { useCart } from "../context/CartContext";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import { Trash2, Plus, Minus } from 'lucide-react';
 
 export default function CartItem({ item }) {
   const { increaseQuantity, decreaseQuantity, removeFromCart } = useCart();
-  const discountedPrice = item.price * (1 - item.discountPercentage / 100);
-  const subtotal = discountedPrice * item.quantity;
+
+  if (!item) return null;
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-overlay/8 bg-base-900 p-4 sm:flex-row sm:items-center">
-      <Link to={`/products/${item.id}`} className="shrink-0">
-        <img
-          src={item.thumbnail}
-          alt={item.title}
-          className="h-24 w-24 rounded-xl object-cover sm:h-20 sm:w-20"
-        />
-      </Link>
-
-      <div className="min-w-0 flex-1">
-        <Link to={`/products/${item.id}`}>
-          <h3 className="truncate text-sm font-semibold text-base-100 hover:text-base-100">{item.title}</h3>
+    <div className="p-4 rounded-3xl glass-panel border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 transition-all hover:border-cyan-500/30">
+      
+      {/* Product Image & Details */}
+      <div className="flex items-center gap-4 w-full sm:w-auto">
+        <Link
+          to={`/products/${item.id}`}
+          className="w-20 h-20 rounded-2xl bg-slate-900/80 border border-white/10 p-2 shrink-0 flex items-center justify-center overflow-hidden group"
+        >
+          <img
+            src={item.thumbnail}
+            alt={item.title}
+            className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform"
+          />
         </Link>
-        <p className="mt-1 text-sm text-base-400">${discountedPrice.toFixed(2)} each</p>
+
+        <div className="space-y-1 min-w-0 flex-1">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-semibold block">
+            {item.category}
+          </span>
+          <Link
+            to={`/products/${item.id}`}
+            className="text-sm font-bold text-white font-['Space_Grotesk'] hover:text-cyan-400 transition-colors line-clamp-1 block"
+          >
+            {item.title}
+          </Link>
+          <div className="text-xs font-mono text-slate-400">
+            Unit Price: <span className="text-white font-semibold">${item.price}</span>
+          </div>
+        </div>
       </div>
 
-      <div className="flex items-center justify-between gap-4 sm:justify-end">
-        <div className="flex items-center gap-1 rounded-lg border border-overlay/8 bg-base-850 p-1">
+      {/* Quantity Manager & Subtotal */}
+      <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-white/5">
+        
+        {/* Quantity Controls */}
+        <div className="flex items-center gap-2 p-1.5 rounded-xl bg-slate-900/90 border border-white/10">
           <button
+            type="button"
             onClick={() => decreaseQuantity(item.id)}
-            className="flex h-7 w-7 items-center justify-center rounded-md text-base-300 transition hover:bg-overlay/5 hover:text-base-100"
-            aria-label="Decrease quantity"
+            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+            title="Decrease quantity"
           >
-            <Minus size={14} />
+            <Minus className="w-3.5 h-3.5" />
           </button>
-          <span className="w-6 text-center text-sm font-semibold text-base-100">{item.quantity}</span>
+
+          <span className="w-8 text-center font-mono font-bold text-xs text-cyan-300">
+            {item.quantity}
+          </span>
+
           <button
+            type="button"
             onClick={() => increaseQuantity(item.id)}
-            disabled={item.quantity >= item.stock}
-            className="flex h-7 w-7 items-center justify-center rounded-md text-base-300 transition hover:bg-overlay/5 hover:text-base-100 disabled:opacity-30"
-            aria-label="Increase quantity"
+            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+            title="Increase quantity"
           >
-            <Plus size={14} />
+            <Plus className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        <span className="w-20 text-right text-sm font-bold text-base-100">${subtotal.toFixed(2)}</span>
+        {/* Item Total Price */}
+        <div className="text-right min-w-[80px]">
+          <div className="text-sm font-extrabold font-mono text-cyan-400">
+            ${(item.price * item.quantity).toFixed(2)}
+          </div>
+          <div className="text-[10px] font-mono text-slate-500">
+            ${item.price} × {item.quantity}
+          </div>
+        </div>
 
+        {/* Delete Item Button */}
         <button
+          type="button"
           onClick={() => removeFromCart(item.id)}
-          className="flex h-8 w-8 items-center justify-center rounded-lg text-base-400 transition hover:bg-red-500/10 hover:text-red-400"
-          aria-label="Remove item"
+          className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+          title="Remove from cart"
         >
-          <Trash2 size={16} />
+          <Trash2 className="w-4 h-4" />
         </button>
+
       </div>
+
     </div>
   );
 }

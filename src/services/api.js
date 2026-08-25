@@ -1,110 +1,112 @@
-import axios from "axios";
+import axios from 'axios';
 
-// Central axios instance for the DummyJSON product catalog — kept separate
-// from services/auth.js, which talks to our own backend instead.
-const api = axios.create({
-  baseURL: "https://dummyjson.com",
+/**
+ * Dedicated REST API service layer using Axios
+ * Base URL: https://dummyjson.com
+ */
+const apiClient = axios.create({
+  baseURL: 'https://dummyjson.com',
   timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
-// Normalizes every failure into a plain Error with a readable message,
-// so components only ever have to deal with one error shape.
-api.interceptors.response.use(
-  (response) => response,
+// Response interceptor for consistent error handling
+apiClient.interceptors.response.use(
+  (response) => response.data,
   (error) => {
     const message =
       error.response?.data?.message ||
       error.message ||
-      "Something went wrong. Please try again.";
+      'An unexpected error occurred while communicating with the REST API.';
     return Promise.reject(new Error(message));
   }
 );
 
-// Removes undefined/empty values so axios doesn't serialize them as
-// literal "undefined" query params.
-function cleanParams(params = {}) {
-  return Object.fromEntries(
-    Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== "")
-  );
-}
-
 /**
- * Fetches a paginated list of products.
- * options: { limit, skip, sortBy, order }
+ * Fetch list of products with pagination, sorting, and limit parameters
+ * @param {Object} params - { limit, skip, sortBy, order }
  */
-export async function getProducts(options = {}) {
-  const { limit = 12, skip = 0, sortBy, order } = options;
-  const { data } = await api.get("/products", {
-    params: cleanParams({ limit, skip, sortBy, order }),
-  });
-  return data; // { products, total, skip, limit }
-}
-
-/** Fetches a single product by its id. */
-export async function getProductById(id) {
-  const { data } = await api.get(`/products/${id}`);
-  return data;
-}
-
-/** Fetches the list of available product categories. */
-export async function getCategories() {
-  const { data } = await api.get("/products/categories");
-  // Normalize: some API versions return plain strings instead of objects.
-  return data.map((entry) =>
-    typeof entry === "string" ? { slug: entry, name: entry } : { slug: entry.slug, name: entry.name }
-  );
-}
-
-/**
- * Fetches products belonging to a single category.
- * options: { limit, skip, sortBy, order }
- */
-export async function getProductsByCategory(category, options = {}) {
-  const { limit = 12, skip = 0, sortBy, order } = options;
-  const { data } = await api.get(`/products/category/${category}`, {
-    params: cleanParams({ limit, skip, sortBy, order }),
-  });
-  return data;
-}
-
-/**
- * Searches products by a free-text query.
- * options: { limit, skip, sortBy, order }
- */
-export async function searchProducts(query, options = {}) {
-  const { limit = 12, skip = 0, sortBy, order } = options;
-  const { data } = await api.get("/products/search", {
-    params: cleanParams({ q: query, limit, skip, sortBy, order }),
-  });
-  return data;
-}
-
-/**
- * Fetches every distinct brand across the whole catalog, using `select` to
- * pull back only the `brand` field so the request stays lightweight even
- * though it covers all ~194 products.
- */
-export async function getAllBrands() {
-  const { data } = await api.get("/products", { params: { limit: 0, select: "brand" } });
-  const brands = new Set(data.products.map((p) => p.brand).filter(Boolean));
-  return [...brands].sort();
-}
-
-/**
- * Fetches related products from the same category, using the native Fetch
- * API directly rather than the Axios instance above — the rest of this
- * service layer standardizes on Axios, but this shows the fetch()-based
- * approach works the same way: request, check `ok`, parse JSON, handle errors.
- */
-export async function getRelatedProducts(category, excludeId, limit = 4) {
-  const response = await fetch(`https://dummyjson.com/products/category/${category}?limit=${limit + 1}`);
-
-  if (!response.ok) {
-    throw new Error(`Failed to load related products (status ${response.status})`);
+export async function getProducts({ limit = 12, skip = 0, sortBy = '', order = 'asc' } = {}) {
+  const params = { limit, skip };
+  if (sortBy) {
+    params.sortBy = sortBy;
+    params.order = order;
   }
-
-  const data = await response.json();
-  return data.products.filter((p) => p.id !== Number(excludeId)).slice(0, limit);
+  return apiClient.get('/products', { params });
 }
 
-export default api;
+/**
+ * Fetch a single product by its ID
+ * @param {number|string} id - Product ID
+ */
+export async function getProductById(id) {
+  if (!id) throw new Error('Product ID is required');
+  return apiClient.get(`/products/${id}`);
+}
+
+/**
+ * Fetch list of all product categories
+ */
+export async function getCategories() {
+  return apiClient.get('/products/categories');
+}
+
+/**
+ * Fetch products by category name with pagination
+ * @param {string} category - Category slug
+ * @param {Object} params - { limit, skip }
+ */
+export async function getProductsByCategory(category, { limit = 12, skip = 0 } = {}) {
+  if (!category || category === 'all') {
+    return getProducts({ limit, skip });
+  }
+  return apiClient.get(`/products/category/${encodeURIComponent(category)}`, {
+    params: { limit, skip },
+  });
+}
+
+/**
+ * Search products by query string
+ * @param {string} query - Search query
+ * @param {Object} params - { limit, skip }
+ */
+export async function searchProducts(query, { limit = 12, skip = 0 } = {}) {
+  if (!query || !query.trim()) {
+    return getProducts({ limit, skip });
+  }
+  return apiClient.get('/products/search', {
+    params: { q: query.trim(), limit, skip },
+  });
+}
+
+/**
+ * Authenticate user credentials against DummyJSON Auth API
+ * @param {Object} credentials - { username, password }
+ */
+export async function loginUser({ username, password }) {
+  if (!username || !password) {
+    throw new Error('Username and password are required');
+  }
+  return apiClient.post('/auth/login', {
+    username: username.trim(),
+    password: password.trim(),
+    expiresInMins: 60,
+  });
+}
+
+/**
+ * Fetch current user profile with auth token
+ * @param {string} token - Bearer auth token
+ */
+export async function getCurrentUser(token) {
+  if (!token) throw new Error('Auth token is required');
+  return apiClient.get('/auth/me', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export default apiClient;

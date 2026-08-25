@@ -1,20 +1,34 @@
-import { SlidersHorizontal } from "lucide-react";
+import React from 'react';
+import { DollarSign } from 'lucide-react';
 
-export default function PriceFilter({ min, max, value, onChange }) {
+export default function PriceFilter({ maxPrice = 2000, currentPrice, onChange }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-overlay/8 bg-base-900 px-4 py-2.5">
-      <SlidersHorizontal size={15} className="shrink-0 text-base-400" />
-      <span className="whitespace-nowrap text-xs text-base-400">
-        ${value[0]} &ndash; ${value[1]}
-      </span>
+    <div className="p-4 rounded-2xl glass-panel border border-white/10 space-y-2.5">
+      <div className="flex items-center justify-between text-xs font-mono">
+        <span className="flex items-center gap-1 uppercase tracking-widest text-slate-300 font-bold">
+          <DollarSign className="w-3.5 h-3.5 text-cyan-400" />
+          Max Price Filter
+        </span>
+        <span className="text-cyan-400 font-bold text-sm font-mono">
+          ${currentPrice}
+        </span>
+      </div>
+
       <input
         type="range"
-        min={min}
-        max={max}
-        value={value[1]}
-        onChange={(e) => onChange([value[0], Number(e.target.value)])}
-        className="h-1.5 w-32 cursor-pointer accent-accent-500 sm:w-40"
+        min="5"
+        max={maxPrice}
+        step="10"
+        value={currentPrice}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
       />
+
+      <div className="flex justify-between text-[10px] font-mono text-slate-500">
+        <span>$5</span>
+        <span>${Math.round(maxPrice / 2)}</span>
+        <span>${maxPrice}</span>
+      </div>
     </div>
   );
 }
