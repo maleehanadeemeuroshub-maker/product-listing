@@ -14,16 +14,18 @@ app.use(cors());
 app.use(express.json());
 
 // Vercel gives handlers req.query populated from both the URL's query
-// string and any dynamic route segments (e.g. [id].js). Express splits
-// those into req.query and req.params, so we merge them back together
-// before the shared handler code ever runs.
-function mount(method, routePath, importPath) {
+// string and any dynamic route segments (e.g. [id].js, [[...slug]].js).
+// Express splits those into req.query and req.params instead, and (unlike
+// Vercel's catch-all routes) always gives a single string rather than an
+// array — so `shapeParams` lets each route describe how its req.params
+// should be reshaped into the query keys the consolidated handler expects.
+function mount(method, routePath, importPath, shapeParams = (params) => params) {
   app[method](routePath, async (req, res) => {
     try {
       const mod = await import(importPath);
       // req.query is getter-only in Express 5, so redefine it instead of assigning.
       Object.defineProperty(req, "query", {
-        value: { ...req.query, ...req.params },
+        value: { ...req.query, ...shapeParams(req.params) },
         configurable: true,
       });
       await mod.default(req, res);
@@ -34,25 +36,26 @@ function mount(method, routePath, importPath) {
   });
 }
 
-mount("post", "/api/auth/register", "../api/auth/register.js");
-mount("post", "/api/auth/login", "../api/auth/login.js");
-mount("get", "/api/auth/verify-email", "../api/auth/verify-email.js");
-mount("post", "/api/auth/resend-verification", "../api/auth/resend-verification.js");
-mount("post", "/api/auth/forgot-password", "../api/auth/forgot-password.js");
-mount("post", "/api/auth/reset-password", "../api/auth/reset-password.js");
-mount("post", "/api/auth/change-password", "../api/auth/change-password.js");
-mount("get", "/api/auth/me", "../api/auth/me.js");
+// api/auth, api/addresses and api/orders were consolidated from one file per
+// endpoint into a handful of dynamic catch-all routes (see api/auth/[action].js)
+// to fit Vercel Hobby's 12-serverless-function cap. The route paths below are
+// unchanged; only the underlying file each one loads (and how its params are
+// shaped) is different now.
+mount("all", "/api/auth/:action", "../api/auth/[action].js");
 
-mount("get", "/api/orders", "../api/orders/index.js");
-mount("post", "/api/orders", "../api/orders/index.js");
-mount("get", "/api/orders/:id", "../api/orders/[id].js");
-mount("post", "/api/orders/:id/cancel", "../api/orders/[id]/cancel.js");
-mount("post", "/api/orders/validate-coupon", "../api/orders/validate-coupon.js");
+// api/orders/[[...slug]].js expects req.query.slug as an array (Vercel's
+// optional-catch-all shape): [] for /api/orders, [id] for /api/orders/:id,
+// [id, "cancel"] for /api/orders/:id/cancel.
+mount("get", "/api/orders", "../api/orders/[[...slug]].js");
+mount("post", "/api/orders", "../api/orders/[[...slug]].js");
+mount("post", "/api/orders/validate-coupon", "../api/orders/[[...slug]].js", () => ({ slug: ["validate-coupon"] }));
+mount("get", "/api/orders/:id", "../api/orders/[[...slug]].js", (p) => ({ slug: [p.id] }));
+mount("post", "/api/orders/:id/cancel", "../api/orders/[[...slug]].js", (p) => ({ slug: [p.id, "cancel"] }));
 
-mount("get", "/api/addresses", "../api/addresses/index.js");
-mount("post", "/api/addresses", "../api/addresses/index.js");
-mount("delete", "/api/addresses/:id", "../api/addresses/[id].js");
-mount("patch", "/api/addresses/:id", "../api/addresses/[id].js");
+mount("get", "/api/addresses", "../api/addresses/[[...id]].js");
+mount("post", "/api/addresses", "../api/addresses/[[...id]].js");
+mount("delete", "/api/addresses/:id", "../api/addresses/[[...id]].js");
+mount("patch", "/api/addresses/:id", "../api/addresses/[[...id]].js");
 
 mount("get", "/api/dev/inbox", "../api/dev/inbox.js");
 
