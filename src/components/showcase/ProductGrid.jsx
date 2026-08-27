@@ -36,11 +36,11 @@ export default function ProductGrid() {
     <div className="flex-1 space-y-6">
       
       {/* Top Toolbar: View Switcher + Sort Options + Count */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl glass-panel border border-white/10">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl glass-panel border border-slate-900/10">
         
         {/* Results Counter & Search Status */}
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-white font-['Space_Grotesk']">
+          <span className="text-sm font-semibold text-slate-900 font-['Space_Grotesk']">
             {filteredProducts.length} Products Found
           </span>
           {filters.searchQuery && (
@@ -54,14 +54,14 @@ export default function ProductGrid() {
         <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
           
           {/* View Mode Toggle Buttons */}
-          <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-900/80 border border-white/10">
+          <div className="flex items-center gap-1 p-1 rounded-xl bg-white/80 border border-slate-900/10">
             <button
               onClick={() => handleViewChange('grid')}
               title="3D Card Grid View"
               className={`p-2 rounded-lg transition-all ${
                 viewMode === 'grid'
                   ? 'bg-cyan-500 text-black shadow-md shadow-cyan-500/20 font-bold'
-                  : 'text-slate-400 hover:text-white'
+                  : 'text-slate-500 hover:text-slate-900'
               }`}
             >
               <LayoutGrid className="w-4 h-4" />
@@ -73,7 +73,7 @@ export default function ProductGrid() {
               className={`p-2 rounded-lg transition-all ${
                 viewMode === 'spatial-carousel'
                   ? 'bg-cyan-500 text-black shadow-md shadow-cyan-500/20 font-bold'
-                  : 'text-slate-400 hover:text-white'
+                  : 'text-slate-500 hover:text-slate-900'
               }`}
             >
               <Disc3 className="w-4 h-4" />
@@ -85,7 +85,7 @@ export default function ProductGrid() {
               className={`p-2 rounded-lg transition-all ${
                 viewMode === 'split-cinema'
                   ? 'bg-cyan-500 text-black shadow-md shadow-cyan-500/20 font-bold'
-                  : 'text-slate-400 hover:text-white'
+                  : 'text-slate-500 hover:text-slate-900'
               }`}
             >
               <Columns className="w-4 h-4" />
@@ -93,18 +93,18 @@ export default function ProductGrid() {
           </div>
 
           {/* Sort Dropdown */}
-          <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900/80 border border-white/10 text-xs font-mono">
-            <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
+          <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/80 border border-slate-900/10 text-xs font-mono">
+            <ArrowUpDown className="w-3.5 h-3.5 text-slate-500" />
             <select
               value={filters.sortBy}
               onChange={handleSortChange}
-              className="bg-transparent text-slate-200 focus:outline-none cursor-pointer"
+              className="bg-transparent text-slate-700 focus:outline-none cursor-pointer"
             >
-              <option value="popularity" className="bg-slate-900">Most Popular</option>
-              <option value="price-asc" className="bg-slate-900">Price: Low to High</option>
-              <option value="price-desc" className="bg-slate-900">Price: High to Low</option>
-              <option value="rating" className="bg-slate-900">Highest Rated</option>
-              <option value="newest" className="bg-slate-900">Newest Release</option>
+              <option value="popularity" className="bg-white">Most Popular</option>
+              <option value="price-asc" className="bg-white">Price: Low to High</option>
+              <option value="price-desc" className="bg-white">Price: High to Low</option>
+              <option value="rating" className="bg-white">Highest Rated</option>
+              <option value="newest" className="bg-white">Newest Release</option>
             </select>
           </div>
 
@@ -115,14 +115,14 @@ export default function ProductGrid() {
       {/* Conditional View Rendering */}
       {filteredProducts.length === 0 ? (
         /* Empty State */
-        <div className="py-20 text-center rounded-3xl glass-panel border border-white/10 p-8 space-y-4">
+        <div className="py-20 text-center rounded-3xl glass-panel border border-slate-900/10 p-8 space-y-4">
           <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mx-auto">
             <SearchX className="w-8 h-8" />
           </div>
-          <h3 className="text-lg font-bold text-white font-['Space_Grotesk']">
+          <h3 className="text-lg font-bold text-slate-900 font-['Space_Grotesk']">
             No 3D Products Match Your Filters
           </h3>
-          <p className="text-sm text-slate-400 max-w-sm mx-auto">
+          <p className="text-sm text-slate-500 max-w-sm mx-auto">
             Try adjusting your search query, increasing your price range, or selecting "All Products".
           </p>
           <button

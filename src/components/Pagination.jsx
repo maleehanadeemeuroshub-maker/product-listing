@@ -32,8 +32,8 @@ export default function Pagination({
   const pages = getPageNumbers();
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6 border-t border-white/10 mt-8 w-full font-mono text-xs">
-      <div className="text-slate-400">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6 border-t border-slate-900/10 mt-8 w-full font-mono text-xs">
+      <div className="text-slate-500">
         Showing{' '}
         <span className="text-cyan-400 font-bold">
           {(currentPage - 1) * limit + 1}
@@ -42,14 +42,14 @@ export default function Pagination({
         <span className="text-cyan-400 font-bold">
           {Math.min(currentPage * limit, total)}
         </span>{' '}
-        of <span className="text-white font-bold">{total}</span> products
+        of <span className="text-slate-900 font-bold">{total}</span> products
       </div>
 
       <div className="flex items-center gap-1.5">
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="p-2 rounded-xl glass-panel border border-white/10 text-slate-300 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="p-2 rounded-xl glass-panel border border-slate-900/10 text-slate-600 hover:text-slate-900 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           title="Previous page"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -72,7 +72,7 @@ export default function Pagination({
               className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${
                 isCurrent
                   ? 'bg-cyan-500 text-black font-bold shadow-md shadow-cyan-500/20 scale-105'
-                  : 'glass-panel border-white/10 text-slate-300 hover:text-white hover:border-white/20'
+                  : 'glass-panel border-slate-900/10 text-slate-600 hover:text-slate-900 hover:border-slate-900/15'
               }`}
             >
               {p}
@@ -83,7 +83,7 @@ export default function Pagination({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="p-2 rounded-xl glass-panel border border-white/10 text-slate-300 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="p-2 rounded-xl glass-panel border border-slate-900/10 text-slate-600 hover:text-slate-900 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           title="Next page"
         >
           <ChevronRight className="w-4 h-4" />

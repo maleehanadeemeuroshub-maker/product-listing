@@ -59,7 +59,7 @@ export default function Login() {
 
   return (
     <div className="py-12 px-4 flex items-center justify-center min-h-[75vh]">
-      <div className="relative w-full max-w-md rounded-3xl glass-panel border border-cyan-500/30 bg-[#090d16]/95 p-6 sm:p-8 space-y-6 shadow-2xl">
+      <div className="relative w-full max-w-md rounded-3xl glass-panel border border-cyan-500/30 bg-white/95 p-6 sm:p-8 space-y-6 shadow-2xl">
         
         {/* Background Ambient Glow */}
         <div className="absolute top-0 right-0 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -67,15 +67,15 @@ export default function Login() {
         {/* Brand Header */}
         <div className="text-center space-y-2">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 to-purple-500 p-[1.5px] mx-auto shadow-lg shadow-cyan-500/20">
-            <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+            <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center">
               <Store className="w-6 h-6 text-cyan-400" />
             </div>
           </div>
 
-          <h1 className="text-2xl font-bold font-['Space_Grotesk'] text-white">
+          <h1 className="text-2xl font-bold font-['Space_Grotesk'] text-slate-900">
             Welcome to Shoply.io
           </h1>
-          <p className="text-xs font-mono text-slate-400">
+          <p className="text-xs font-mono text-slate-500">
             DummyJSON Real REST API Authentication
           </p>
         </div>
@@ -91,7 +91,7 @@ export default function Login() {
         {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
-            <label className="text-[11px] font-mono uppercase tracking-wider text-slate-300 font-semibold block">
+            <label className="text-[11px] font-mono uppercase tracking-wider text-slate-600 font-semibold block">
               Username
             </label>
             <div className="relative">
@@ -102,13 +102,13 @@ export default function Login() {
                 placeholder="e.g. emilys"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl bg-slate-900 border border-white/10 text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-400 font-mono"
+                className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl bg-white border border-slate-900/10 text-slate-900 placeholder:text-slate-600 focus:outline-none focus:border-cyan-400 font-mono"
               />
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="text-[11px] font-mono uppercase tracking-wider text-slate-300 font-semibold block">
+            <label className="text-[11px] font-mono uppercase tracking-wider text-slate-600 font-semibold block">
               Password
             </label>
             <div className="relative">
@@ -119,12 +119,12 @@ export default function Login() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-10 py-2.5 text-xs rounded-xl bg-slate-900 border border-white/10 text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-400 font-mono"
+                className="w-full pl-10 pr-10 py-2.5 text-xs rounded-xl bg-white border border-slate-900/10 text-slate-900 placeholder:text-slate-600 focus:outline-none focus:border-cyan-400 font-mono"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-600"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -151,8 +151,8 @@ export default function Login() {
         </form>
 
         {/* Demo Fast Account Switcher Buttons */}
-        <div className="pt-4 border-t border-white/10 space-y-2.5">
-          <span className="text-[11px] font-mono text-slate-400 block text-center font-semibold">
+        <div className="pt-4 border-t border-slate-900/10 space-y-2.5">
+          <span className="text-[11px] font-mono text-slate-500 block text-center font-semibold">
             1-Click Public DummyJSON Test Accounts:
           </span>
 
@@ -181,7 +181,7 @@ export default function Login() {
         <div className="text-center pt-2">
           <Link
             to="/products"
-            className="text-xs font-mono text-slate-400 hover:text-cyan-400 transition-colors"
+            className="text-xs font-mono text-slate-500 hover:text-cyan-400 transition-colors"
           >
             ← Skip & browse as Guest
           </Link>

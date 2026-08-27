@@ -51,8 +51,8 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative w-full min-h-[90vh] flex flex-col justify-center pt-8 pb-16 overflow-hidden cyber-grid-bg">
-      
+    <section className="relative isolate w-full min-h-[90vh] flex flex-col justify-center pt-8 pb-16 overflow-hidden cyber-grid-bg">
+
       {/* Background Ambient Glow Orbs */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none animate-pulse-slow -z-10" />
       <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-purple-500/15 rounded-full blur-3xl pointer-events-none animate-pulse-slow -z-10" />
@@ -86,7 +86,7 @@ export default function HeroSection() {
                   className={`px-3 py-1.5 rounded-xl text-xs font-mono transition-all duration-300 ${
                     idx === activeHeroIndex
                       ? 'bg-cyan-500 text-black font-bold shadow-lg shadow-cyan-500/30 scale-105'
-                      : 'glass-pill text-slate-400 hover:text-white hover:border-white/20'
+                      : 'glass-pill text-slate-500 hover:text-slate-900 hover:border-slate-900/15'
                   }`}
                 >
                   {p.name.split(' ')[0]} {p.name.split(' ')[1]}
@@ -99,17 +99,17 @@ export default function HeroSection() {
               <span className="inline-block text-xs font-mono uppercase tracking-widest text-cyan-400 font-semibold mb-2">
                 {currentProduct.badge} • Series {currentProduct.releaseYear}
               </span>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight font-['Space_Grotesk'] text-white leading-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight font-['Space_Grotesk'] text-slate-900 leading-tight">
                 {currentProduct.name}
               </h1>
-              <p className="mt-3 text-lg text-slate-300 font-light leading-relaxed max-w-xl mx-auto lg:mx-0">
+              <p className="mt-3 text-lg text-slate-600 font-light leading-relaxed max-w-xl mx-auto lg:mx-0">
                 {currentProduct.tagline}
               </p>
             </div>
 
             {/* Colorway Switcher Bar */}
-            <div className="flex items-center justify-center lg:justify-start gap-3 p-3 rounded-2xl glass-panel border border-white/10 w-fit mx-auto lg:mx-0">
-              <span className="text-xs font-mono text-slate-400 font-medium">Colorway:</span>
+            <div className="flex items-center justify-center lg:justify-start gap-3 p-3 rounded-2xl glass-panel border border-slate-900/10 w-fit mx-auto lg:mx-0">
+              <span className="text-xs font-mono text-slate-500 font-medium">Colorway:</span>
               <div className="flex items-center gap-2">
                 {currentProduct.colors.map((c, idx) => (
                   <button
@@ -123,13 +123,13 @@ export default function HeroSection() {
                     }`}
                   >
                     <span
-                      className="w-full h-full rounded-full block border border-white/20"
+                      className="w-full h-full rounded-full block border border-slate-900/15"
                       style={{ backgroundColor: c.hex }}
                     />
                   </button>
                 ))}
               </div>
-              <span className="text-xs font-mono text-cyan-300 font-semibold pl-2 border-l border-white/10 hidden sm:inline">
+              <span className="text-xs font-mono text-cyan-300 font-semibold pl-2 border-l border-slate-900/10 hidden sm:inline">
                 {activeColor.name}
               </span>
             </div>
@@ -137,7 +137,7 @@ export default function HeroSection() {
             {/* Price & Rating Display */}
             <div className="flex items-center justify-center lg:justify-start gap-4">
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl sm:text-4xl font-extrabold text-white font-mono">
+                <span className="text-3xl sm:text-4xl font-extrabold text-slate-900 font-mono">
                   ${currentProduct.price}
                 </span>
                 {currentProduct.originalPrice && (
@@ -147,12 +147,12 @@ export default function HeroSection() {
                 )}
               </div>
 
-              <div className="h-8 w-px bg-white/10 hidden sm:block" />
+              <div className="h-8 w-px bg-white/5 hidden sm:block" />
 
               <div className="flex items-center gap-1.5 text-xs font-mono text-amber-400">
                 <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                <span className="font-bold text-white text-sm">{currentProduct.rating}</span>
-                <span className="text-slate-400">({currentProduct.reviewCount} reviews)</span>
+                <span className="font-bold text-slate-900 text-sm">{currentProduct.rating}</span>
+                <span className="text-slate-500">({currentProduct.reviewCount} reviews)</span>
               </div>
             </div>
 
@@ -170,7 +170,7 @@ export default function HeroSection() {
 
               <button
                 onClick={scrollToCatalog}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl glass-panel border border-white/15 text-white hover:border-cyan-500/50 hover:bg-white/10 font-semibold text-sm font-mono transition-all flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl glass-panel border border-slate-900/12 text-slate-900 hover:border-cyan-500/50 hover:bg-white/5 font-semibold text-sm font-mono transition-all flex items-center justify-center gap-2"
               >
                 <Compass className="w-4 h-4 text-cyan-400" />
                 Explore Products
@@ -178,7 +178,7 @@ export default function HeroSection() {
 
               <button
                 onClick={() => openProductDetail(currentProduct, activeColor)}
-                className="w-full sm:w-auto px-5 py-3.5 rounded-2xl glass-panel border border-white/15 text-slate-300 hover:text-white font-semibold text-sm font-mono transition-all flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-5 py-3.5 rounded-2xl glass-panel border border-slate-900/12 text-slate-600 hover:text-slate-900 font-semibold text-sm font-mono transition-all flex items-center justify-center gap-2"
                 title="Inspect in 3D Studio"
               >
                 <Eye className="w-4 h-4 text-cyan-400" />
@@ -188,7 +188,7 @@ export default function HeroSection() {
               <button
                 onClick={() => openARSimulator(currentProduct)}
                 title="Preview AR Simulator"
-                className="w-full sm:w-auto p-3.5 rounded-2xl glass-panel border border-white/15 text-purple-300 hover:text-white hover:border-purple-500/50 transition-all flex items-center justify-center"
+                className="w-full sm:w-auto p-3.5 rounded-2xl glass-panel border border-slate-900/12 text-purple-300 hover:text-slate-900 hover:border-purple-500/50 transition-all flex items-center justify-center"
               >
                 <Box className="w-4 h-4" />
               </button>
@@ -197,7 +197,7 @@ export default function HeroSection() {
             {/* Mini Feature Highlights */}
             <div className="grid grid-cols-2 gap-3 pt-4 max-w-lg mx-auto lg:mx-0 text-left">
               {currentProduct.features.slice(0, 2).map((feat, i) => (
-                <div key={i} className="flex items-start gap-2 text-xs text-slate-300">
+                <div key={i} className="flex items-start gap-2 text-xs text-slate-600">
                   <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
                   <span>{feat}</span>
                 </div>

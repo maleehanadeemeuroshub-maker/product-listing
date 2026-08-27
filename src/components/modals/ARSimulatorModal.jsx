@@ -28,21 +28,21 @@ export default function ARSimulatorModal() {
   if (!isAROpen || !arProduct) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/85 backdrop-blur-xl animate-in fade-in duration-200">
       
-      <div className="relative w-full max-w-4xl rounded-3xl glass-panel border border-purple-500/30 bg-[#07090e]/95 p-6 space-y-6 shadow-2xl">
+      <div className="relative w-full max-w-4xl rounded-3xl glass-panel border border-purple-500/30 bg-white/95 p-6 space-y-6 shadow-2xl">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-white/10">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-900/10">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/40">
               <Box className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold font-['Space_Grotesk'] text-white">
+              <h2 className="text-lg font-bold font-['Space_Grotesk'] text-slate-900">
                 AR & Physical Scale Simulator
               </h2>
-              <p className="text-xs text-slate-400 font-mono">
+              <p className="text-xs text-slate-500 font-mono">
                 {arProduct.name} • 1:1 True Dimensional Projection
               </p>
             </div>
@@ -53,14 +53,14 @@ export default function ARSimulatorModal() {
               sound.playClick();
               setIsAROpen(false);
             }}
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10"
+            className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-white/5"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* AR Viewport Camera Grid Area */}
-        <div className="relative w-full h-[360px] sm:h-[420px] rounded-2xl bg-gradient-to-b from-slate-950 via-slate-900 to-black border border-purple-500/30 overflow-hidden flex items-center justify-center">
+        <div className="relative w-full h-[360px] sm:h-[420px] rounded-2xl bg-gradient-to-b from-white via-slate-50 to-white border border-purple-500/30 overflow-hidden flex items-center justify-center">
           
           {/* Futuristic Camera HUD Grid Lines */}
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#a855f710_1px,transparent_1px),linear-gradient(to_bottom,#a855f710_1px,transparent_1px)] bg-[size:30px_30px] pointer-events-none" />
@@ -83,11 +83,11 @@ export default function ARSimulatorModal() {
           </div>
 
           {/* Comparison Scale Ghost Graphic */}
-          <div className="absolute right-8 bottom-8 p-3 rounded-xl glass-panel border border-white/10 text-xs font-mono text-slate-300 z-10 flex items-center gap-2">
+          <div className="absolute right-8 bottom-8 p-3 rounded-xl glass-panel border border-slate-900/10 text-xs font-mono text-slate-600 z-10 flex items-center gap-2">
             <activeScaleObj.icon className="w-4 h-4 text-purple-400" />
             <div>
-              <span className="font-bold text-white block">{activeScaleObj.name} Reference</span>
-              <span className="text-[10px] text-slate-400">{activeScaleObj.width} × {activeScaleObj.height}</span>
+              <span className="font-bold text-slate-900 block">{activeScaleObj.name} Reference</span>
+              <span className="text-[10px] text-slate-500">{activeScaleObj.width} × {activeScaleObj.height}</span>
             </div>
           </div>
         </div>
@@ -97,7 +97,7 @@ export default function ARSimulatorModal() {
           
           {/* Reference Scale Switcher */}
           <div className="space-y-2">
-            <span className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+            <span className="text-xs font-mono text-slate-500 uppercase tracking-wider">
               Compare Against Everyday Object:
             </span>
             <div className="flex items-center gap-2">
@@ -114,7 +114,7 @@ export default function ARSimulatorModal() {
                     className={`flex-1 py-2 px-3 rounded-xl text-xs font-mono transition-all flex items-center justify-center gap-1.5 ${
                       isSelected
                         ? 'bg-purple-500/20 border border-purple-400 text-purple-300 font-bold'
-                        : 'glass-panel border-white/10 text-slate-400 hover:text-white'
+                        : 'glass-panel border-slate-900/10 text-slate-500 hover:text-slate-900'
                     }`}
                   >
                     <Icon className="w-3.5 h-3.5" />
@@ -126,19 +126,19 @@ export default function ARSimulatorModal() {
           </div>
 
           {/* Dimensional Specs */}
-          <div className="p-3 rounded-2xl glass-panel border border-white/10 flex items-center justify-between text-xs font-mono">
+          <div className="p-3 rounded-2xl glass-panel border border-slate-900/10 flex items-center justify-between text-xs font-mono">
             <div>
-              <span className="text-slate-400 block text-[10px]">WEIGHT / MASS</span>
-              <span className="text-white font-bold">{arProduct.specs['Weight'] || '240 grams'}</span>
+              <span className="text-slate-500 block text-[10px]">WEIGHT / MASS</span>
+              <span className="text-slate-900 font-bold">{arProduct.specs['Weight'] || '240 grams'}</span>
             </div>
-            <div className="h-6 w-px bg-white/10" />
+            <div className="h-6 w-px bg-white/5" />
             <div>
-              <span className="text-slate-400 block text-[10px]">MATERIAL DENSITY</span>
+              <span className="text-slate-500 block text-[10px]">MATERIAL DENSITY</span>
               <span className="text-cyan-400 font-bold">Aerospace Spec</span>
             </div>
-            <div className="h-6 w-px bg-white/10" />
+            <div className="h-6 w-px bg-white/5" />
             <div>
-              <span className="text-slate-400 block text-[10px]">PROJECTION</span>
+              <span className="text-slate-500 block text-[10px]">PROJECTION</span>
               <span className="text-emerald-400 font-bold">Spatial 6-DoF</span>
             </div>
           </div>

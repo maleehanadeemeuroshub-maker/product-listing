@@ -68,16 +68,16 @@ export default function FilterSidebar({ className = '' }) {
     <aside className={`w-full lg:w-72 space-y-6 ${className}`}>
       
       {/* Header */}
-      <div className="flex items-center justify-between p-4 rounded-2xl glass-panel border border-white/10">
+      <div className="flex items-center justify-between p-4 rounded-2xl glass-panel border border-slate-900/10">
         <div className="flex items-center gap-2">
           <SlidersHorizontal className="w-4 h-4 text-cyan-400" />
-          <h3 className="text-sm font-bold font-['Space_Grotesk'] text-white">
+          <h3 className="text-sm font-bold font-['Space_Grotesk'] text-slate-900">
             Filters & Search
           </h3>
         </div>
         <button
           onClick={handleReset}
-          className="text-xs font-mono text-slate-400 hover:text-cyan-400 flex items-center gap-1 transition-colors"
+          className="text-xs font-mono text-slate-500 hover:text-cyan-400 flex items-center gap-1 transition-colors"
         >
           <RotateCcw className="w-3 h-3" />
           Reset
@@ -85,8 +85,8 @@ export default function FilterSidebar({ className = '' }) {
       </div>
 
       {/* Quick Search in Filter */}
-      <div className="p-4 rounded-2xl glass-panel border border-white/10 space-y-2">
-        <h4 className="text-xs font-mono uppercase tracking-widest text-slate-400 font-semibold">
+      <div className="p-4 rounded-2xl glass-panel border border-slate-900/10 space-y-2">
+        <h4 className="text-xs font-mono uppercase tracking-widest text-slate-500 font-semibold">
           Search Hardware
         </h4>
         <div className="relative">
@@ -96,14 +96,14 @@ export default function FilterSidebar({ className = '' }) {
             placeholder="Keyword search..."
             value={filters.searchQuery}
             onChange={(e) => setFilters(prev => ({ ...prev, searchQuery: e.target.value }))}
-            className="w-full pl-8 pr-3 py-2 text-xs rounded-xl bg-slate-900 border border-white/10 text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-400 font-mono"
+            className="w-full pl-8 pr-3 py-2 text-xs rounded-xl bg-white border border-slate-900/10 text-slate-900 placeholder:text-slate-600 focus:outline-none focus:border-cyan-400 font-mono"
           />
         </div>
       </div>
 
       {/* Categories Checkbox / List */}
-      <div className="p-4 rounded-2xl glass-panel border border-white/10 space-y-3">
-        <h4 className="text-xs font-mono uppercase tracking-widest text-slate-400 font-semibold mb-2">
+      <div className="p-4 rounded-2xl glass-panel border border-slate-900/10 space-y-3">
+        <h4 className="text-xs font-mono uppercase tracking-widest text-slate-500 font-semibold mb-2">
           Categories
         </h4>
         <div className="space-y-1.5">
@@ -119,7 +119,7 @@ export default function FilterSidebar({ className = '' }) {
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
                   isSelected
                     ? 'bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 font-bold shadow-sm shadow-cyan-500/10'
-                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    : 'text-slate-500 hover:text-slate-900 hover:bg-white/5'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
@@ -140,8 +140,8 @@ export default function FilterSidebar({ className = '' }) {
       </div>
 
       {/* Brand Filter */}
-      <div className="p-4 rounded-2xl glass-panel border border-white/10 space-y-2.5">
-        <h4 className="text-xs font-mono uppercase tracking-widest text-slate-400 font-semibold">
+      <div className="p-4 rounded-2xl glass-panel border border-slate-900/10 space-y-2.5">
+        <h4 className="text-xs font-mono uppercase tracking-widest text-slate-500 font-semibold">
           Hardware Brand
         </h4>
         <div className="space-y-1 text-xs font-mono">
@@ -154,11 +154,11 @@ export default function FilterSidebar({ className = '' }) {
                 className={`w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-left transition-all ${
                   isSelected
                     ? 'text-cyan-300 font-bold bg-cyan-500/10 border border-cyan-500/30'
-                    : 'text-slate-400 hover:text-slate-200'
+                    : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
                 <div className={`w-3.5 h-3.5 rounded flex items-center justify-center border ${
-                  isSelected ? 'border-cyan-400 bg-cyan-500 text-black' : 'border-white/20 bg-slate-900'
+                  isSelected ? 'border-cyan-400 bg-cyan-500 text-black' : 'border-slate-900/15 bg-white'
                 }`}>
                   {isSelected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
                 </div>
@@ -170,9 +170,9 @@ export default function FilterSidebar({ className = '' }) {
       </div>
 
       {/* Price Range Slider */}
-      <div className="p-4 rounded-2xl glass-panel border border-white/10 space-y-3">
+      <div className="p-4 rounded-2xl glass-panel border border-slate-900/10 space-y-3">
         <div className="flex items-center justify-between text-xs font-mono">
-          <span className="uppercase tracking-widest text-slate-400 font-semibold">
+          <span className="uppercase tracking-widest text-slate-500 font-semibold">
             Max Price
           </span>
           <span className="text-cyan-400 font-bold text-sm">${filters.maxPrice}</span>
@@ -185,7 +185,7 @@ export default function FilterSidebar({ className = '' }) {
           step="50"
           value={filters.maxPrice}
           onChange={(e) => setFilters(prev => ({ ...prev, maxPrice: Number(e.target.value) }))}
-          className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+          className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-cyan-400"
         />
 
         <div className="flex justify-between text-[10px] font-mono text-slate-500">
@@ -196,8 +196,8 @@ export default function FilterSidebar({ className = '' }) {
       </div>
 
       {/* Minimum Rating */}
-      <div className="p-4 rounded-2xl glass-panel border border-white/10 space-y-3">
-        <h4 className="text-xs font-mono uppercase tracking-widest text-slate-400 font-semibold">
+      <div className="p-4 rounded-2xl glass-panel border border-slate-900/10 space-y-3">
+        <h4 className="text-xs font-mono uppercase tracking-widest text-slate-500 font-semibold">
           Customer Rating
         </h4>
         <div className="grid grid-cols-3 gap-2">
@@ -213,7 +213,7 @@ export default function FilterSidebar({ className = '' }) {
                 className={`py-2 px-1 rounded-xl text-xs font-mono transition-all flex items-center justify-center gap-1 ${
                   isSelected
                     ? 'bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold'
-                    : 'glass-pill text-slate-400 hover:text-white'
+                    : 'glass-pill text-slate-500 hover:text-slate-900'
                 }`}
               >
                 <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
@@ -225,9 +225,9 @@ export default function FilterSidebar({ className = '' }) {
       </div>
 
       {/* In-Stock Toggle */}
-      <div className="p-4 rounded-2xl glass-panel border border-white/10">
+      <div className="p-4 rounded-2xl glass-panel border border-slate-900/10">
         <label className="flex items-center justify-between cursor-pointer">
-          <span className="text-xs font-medium text-slate-300">In Stock Only</span>
+          <span className="text-xs font-medium text-slate-600">In Stock Only</span>
           <input
             type="checkbox"
             checked={filters.inStockOnly}
@@ -235,7 +235,7 @@ export default function FilterSidebar({ className = '' }) {
               sound.playClick();
               setFilters(prev => ({ ...prev, inStockOnly: e.target.checked }));
             }}
-            className="w-4 h-4 rounded border-white/20 bg-slate-900 text-cyan-500 focus:ring-cyan-500 accent-cyan-400 cursor-pointer"
+            className="w-4 h-4 rounded border-slate-900/15 bg-white text-cyan-500 focus:ring-cyan-500 accent-cyan-400 cursor-pointer"
           />
         </label>
       </div>

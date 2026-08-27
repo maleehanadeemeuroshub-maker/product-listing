@@ -32,7 +32,7 @@ export default function ProductCard({ product }) {
   const isOutOfStock = product.stock === 0;
 
   return (
-    <div className="group relative rounded-3xl glass-panel border border-white/10 hover:border-cyan-500/40 transition-all duration-300 p-4 sm:p-5 flex flex-col justify-between overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-cyan-500/10 hover:-translate-y-1">
+    <div className="group relative rounded-3xl glass-panel border border-slate-900/10 hover:border-cyan-500/40 transition-all duration-300 p-4 sm:p-5 flex flex-col justify-between overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-cyan-500/10 hover:-translate-y-1">
       
       {/* Background Subtle Gradient Glow */}
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -67,7 +67,7 @@ export default function ProductCard({ product }) {
       {/* Product Image Area */}
       <Link
         to={`/products/${product.id}`}
-        className="relative w-full h-48 sm:h-52 rounded-2xl bg-slate-900/60 overflow-hidden flex items-center justify-center p-3 my-2 block group/img"
+        className="relative w-full h-48 sm:h-52 rounded-2xl bg-slate-50/90 overflow-hidden flex items-center justify-center p-3 my-2 block group/img"
       >
         <img
           src={product.thumbnail || product.images?.[0]}
@@ -87,7 +87,7 @@ export default function ProductCard({ product }) {
       <div className="relative z-10 space-y-2.5 pt-1">
         
         {/* Category & Brand info */}
-        <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
+        <div className="flex items-center justify-between text-[10px] font-mono text-slate-500">
           <span className="uppercase tracking-wider text-cyan-400 font-bold bg-cyan-500/10 px-2 py-0.5 rounded-md">
             {product.category}
           </span>
@@ -97,7 +97,7 @@ export default function ProductCard({ product }) {
         {/* Product Title */}
         <Link
           to={`/products/${product.id}`}
-          className="text-sm font-bold text-white font-['Space_Grotesk'] hover:text-cyan-400 transition-colors line-clamp-1 block"
+          className="text-sm font-bold text-slate-900 font-['Space_Grotesk'] hover:text-cyan-400 transition-colors line-clamp-1 block"
           title={product.title}
         >
           {product.title}
@@ -108,15 +108,15 @@ export default function ProductCard({ product }) {
           <div className="flex items-center">
             <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
           </div>
-          <span className="font-bold text-slate-200">{product.rating}</span>
+          <span className="font-bold text-slate-700">{product.rating}</span>
           <span className="text-slate-500 text-[10px]">({product.reviews?.length || 12} reviews)</span>
         </div>
 
         {/* Price & Action Button Footer */}
-        <div className="flex items-center justify-between gap-2 pt-3 border-t border-white/5">
+        <div className="flex items-center justify-between gap-2 pt-3 border-t border-slate-900/6">
           <div>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-lg font-extrabold text-white font-mono">
+              <span className="text-lg font-extrabold text-slate-900 font-mono">
                 ${product.price}
               </span>
               {originalPrice && (
@@ -130,7 +130,7 @@ export default function ProductCard({ product }) {
           <div className="flex items-center gap-1.5">
             <Link
               to={`/products/${product.id}`}
-              className="p-2 rounded-xl glass-panel border border-white/10 hover:border-cyan-500/40 text-slate-300 hover:text-white transition-colors"
+              className="p-2 rounded-xl glass-panel border border-slate-900/10 hover:border-cyan-500/40 text-slate-600 hover:text-slate-900 transition-colors"
               title="View Product Details"
             >
               <Eye className="w-4 h-4" />
@@ -143,7 +143,7 @@ export default function ProductCard({ product }) {
                 isAdded
                   ? 'bg-emerald-500 text-black shadow-emerald-500/25'
                   : isOutOfStock
-                  ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                  ? 'bg-slate-100 text-slate-500 cursor-not-allowed'
                   : 'bg-cyan-500 hover:bg-cyan-400 text-black shadow-cyan-500/25 hover:shadow-cyan-500/40'
               }`}
             >

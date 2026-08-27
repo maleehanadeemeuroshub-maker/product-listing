@@ -25,7 +25,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full glass-panel border-b border-white/10 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 w-full glass-panel border-b border-slate-900/10 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
         
         {/* Brand Logo */}
@@ -35,15 +35,15 @@ export default function Navbar() {
             className="group flex items-center gap-2.5"
           >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-purple-500 p-[1.5px] shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition-all duration-300">
-              <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+              <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
                 <Store className="w-5 h-5 text-cyan-400 group-hover:scale-110 transition-transform duration-300" />
               </div>
             </div>
             <div>
-              <span className="text-xl font-bold tracking-tight font-['Space_Grotesk'] text-white flex items-center gap-1">
+              <span className="text-xl font-bold tracking-tight font-['Space_Grotesk'] text-slate-900 flex items-center gap-1">
                 Shoply<span className="text-cyan-400">.io</span>
               </span>
-              <span className="block text-[10px] font-mono tracking-widest text-slate-400 uppercase -mt-1">
+              <span className="block text-[10px] font-mono tracking-widest text-slate-500 uppercase -mt-1">
                 REST API Dashboard
               </span>
             </div>
@@ -55,7 +55,7 @@ export default function Navbar() {
               to="/products"
               className={({ isActive }) =>
                 `transition-colors py-1 ${
-                  isActive ? 'text-cyan-400 font-bold border-b-2 border-cyan-400' : 'text-slate-300 hover:text-white'
+                  isActive ? 'text-cyan-400 font-bold border-b-2 border-cyan-400' : 'text-slate-600 hover:text-slate-900'
                 }`
               }
             >
@@ -65,7 +65,7 @@ export default function Navbar() {
               to="/cart"
               className={({ isActive }) =>
                 `transition-colors py-1 ${
-                  isActive ? 'text-cyan-400 font-bold border-b-2 border-cyan-400' : 'text-slate-300 hover:text-white'
+                  isActive ? 'text-cyan-400 font-bold border-b-2 border-cyan-400' : 'text-slate-600 hover:text-slate-900'
                 }`
               }
             >
@@ -80,7 +80,7 @@ export default function Navbar() {
           {/* Cart Page Link with Counter Badge */}
           <Link
             to="/cart"
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 border border-white/10 hover:border-cyan-500/40 text-slate-200 hover:text-white transition-all shadow-md group"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-slate-900/10 hover:border-cyan-500/40 text-slate-700 hover:text-slate-900 transition-all shadow-md group"
           >
             <ShoppingBag className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
             <span className="hidden sm:inline font-mono text-xs font-semibold">Cart</span>
@@ -98,7 +98,7 @@ export default function Navbar() {
                   alt={user.firstName}
                   className="w-7 h-7 rounded-xl object-cover border border-cyan-400/50"
                 />
-                <span className="text-xs font-mono font-bold text-white">
+                <span className="text-xs font-mono font-bold text-slate-900">
                   {user.firstName || user.username}
                 </span>
               </div>
@@ -123,7 +123,7 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 rounded-xl text-slate-400 hover:text-white glass-panel"
+            className="md:hidden p-2 rounded-xl text-slate-500 hover:text-slate-900 glass-panel"
           >
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -133,18 +133,18 @@ export default function Navbar() {
 
       {/* Mobile Drawer Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-white/10 px-4 py-4 space-y-3 bg-[#090d16]/98">
+        <div className="md:hidden border-t border-slate-900/10 px-4 py-4 space-y-3 bg-white/98">
           <NavLink
             to="/products"
             onClick={() => setIsMobileMenuOpen(false)}
-            className="block py-2 text-sm font-mono text-slate-300 hover:text-cyan-400"
+            className="block py-2 text-sm font-mono text-slate-600 hover:text-cyan-400"
           >
             All Products
           </NavLink>
           <NavLink
             to="/cart"
             onClick={() => setIsMobileMenuOpen(false)}
-            className="block py-2 text-sm font-mono text-slate-300 hover:text-cyan-400 flex items-center justify-between"
+            className="block py-2 text-sm font-mono text-slate-600 hover:text-cyan-400 flex items-center justify-between"
           >
             <span>Cart</span>
             <span className="px-2 py-0.5 rounded-full bg-cyan-500 text-black font-bold text-xs">

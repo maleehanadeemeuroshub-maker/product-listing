@@ -68,17 +68,17 @@ export default function CartDrawer() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-black/70 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 overflow-hidden bg-white/70 backdrop-blur-md animate-in fade-in duration-200">
       <div className="absolute inset-0" onClick={() => setIsCartOpen(false)} />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-[#090d16] border-l border-white/10 p-6 flex flex-col justify-between shadow-2xl shadow-cyan-500/10">
+        <div className="w-screen max-w-md bg-white border-l border-slate-900/10 p-6 flex flex-col justify-between shadow-2xl shadow-cyan-500/10">
           
           {/* Drawer Header */}
-          <div className="flex items-center justify-between pb-4 border-b border-white/10 shrink-0">
+          <div className="flex items-center justify-between pb-4 border-b border-slate-900/10 shrink-0">
             <div className="flex items-center gap-2">
               <ShoppingBag className="w-5 h-5 text-cyan-400" />
-              <h2 className="text-lg font-bold font-['Space_Grotesk'] text-white">
+              <h2 className="text-lg font-bold font-['Space_Grotesk'] text-slate-900">
                 Spatial Cart
               </h2>
               <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-mono text-xs font-bold">
@@ -90,16 +90,16 @@ export default function CartDrawer() {
                 sound.playClick();
                 setIsCartOpen(false);
               }}
-              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+              className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-white/5 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Free Shipping Progress Bar */}
-          <div className="p-3 my-3 rounded-2xl glass-panel border border-white/10 shrink-0 space-y-1.5">
+          <div className="p-3 my-3 rounded-2xl glass-panel border border-slate-900/10 shrink-0 space-y-1.5">
             <div className="flex justify-between text-xs font-mono">
-              <span className="text-slate-300">
+              <span className="text-slate-600">
                 {cartSubtotal >= freeShippingThreshold ? (
                   <span className="text-emerald-400 font-bold flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" />
@@ -111,7 +111,7 @@ export default function CartDrawer() {
               </span>
               <span className="text-cyan-400 font-bold">{Math.round(freeShippingProgress)}%</span>
             </div>
-            <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 transition-all duration-500"
                 style={{ width: `${freeShippingProgress}%` }}
@@ -126,10 +126,10 @@ export default function CartDrawer() {
                 <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto animate-bounce">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold font-['Space_Grotesk'] text-white">
+                <h3 className="text-xl font-bold font-['Space_Grotesk'] text-slate-900">
                   Order Successfully Placed!
                 </h3>
-                <p className="text-xs text-slate-400 max-w-xs mx-auto">
+                <p className="text-xs text-slate-500 max-w-xs mx-auto">
                   Thank you for your order. Tracking telemetry and firmware activation keys have been dispatched to your email.
                 </p>
               </div>
@@ -138,10 +138,10 @@ export default function CartDrawer() {
                 <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mx-auto">
                   <ShoppingBag className="w-7 h-7" />
                 </div>
-                <h3 className="text-base font-bold text-white font-['Space_Grotesk']">
+                <h3 className="text-base font-bold text-slate-900 font-['Space_Grotesk']">
                   Your Cart is Empty
                 </h3>
-                <p className="text-xs text-slate-400 max-w-xs mx-auto">
+                <p className="text-xs text-slate-500 max-w-xs mx-auto">
                   Explore our interactive 3D showcase and add futuristic audio, wearables, and computing devices.
                 </p>
               </div>
@@ -149,11 +149,11 @@ export default function CartDrawer() {
               cart.map((item) => (
                 <div
                   key={item.cartItemId}
-                  className="p-3.5 rounded-2xl glass-panel border border-white/10 flex items-center gap-3 relative group"
+                  className="p-3.5 rounded-2xl glass-panel border border-slate-900/10 flex items-center gap-3 relative group"
                 >
                   {/* Color Thumbnail Dot */}
                   <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center border border-white/20 shrink-0"
+                    className="w-12 h-12 rounded-xl flex items-center justify-center border border-slate-900/15 shrink-0"
                     style={{ backgroundColor: `${item.color.hex}22` }}
                   >
                     <span
@@ -164,10 +164,10 @@ export default function CartDrawer() {
 
                   {/* Details */}
                   <div className="flex-1 min-w-0 space-y-1">
-                    <h4 className="text-xs font-bold text-white font-['Space_Grotesk'] line-clamp-1">
+                    <h4 className="text-xs font-bold text-slate-900 font-['Space_Grotesk'] line-clamp-1">
                       {item.product.name}
                     </h4>
-                    <div className="flex items-center gap-2 text-[10px] font-mono text-slate-400">
+                    <div className="flex items-center gap-2 text-[10px] font-mono text-slate-500">
                       <span>{item.color.name}</span>
                       {item.material && <span>• {item.material.name}</span>}
                     </div>
@@ -185,19 +185,19 @@ export default function CartDrawer() {
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
 
-                    <div className="flex items-center gap-1.5 p-1 rounded-lg bg-slate-900 border border-white/10">
+                    <div className="flex items-center gap-1.5 p-1 rounded-lg bg-white border border-slate-900/10">
                       <button
                         onClick={() => updateCartQuantity(item.cartItemId, item.quantity - 1)}
-                        className="p-1 text-slate-400 hover:text-white"
+                        className="p-1 text-slate-500 hover:text-slate-900"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
-                      <span className="w-5 text-center font-mono font-bold text-xs text-white">
+                      <span className="w-5 text-center font-mono font-bold text-xs text-slate-900">
                         {item.quantity}
                       </span>
                       <button
                         onClick={() => updateCartQuantity(item.cartItemId, item.quantity + 1)}
-                        className="p-1 text-slate-400 hover:text-white"
+                        className="p-1 text-slate-500 hover:text-slate-900"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
@@ -210,23 +210,23 @@ export default function CartDrawer() {
 
           {/* Drawer Footer & Checkout Controls */}
           {cart.length > 0 && !checkoutSuccess && (
-            <div className="pt-4 border-t border-white/10 space-y-4 shrink-0">
+            <div className="pt-4 border-t border-slate-900/10 space-y-4 shrink-0">
               
               {/* Promo Code Form */}
               <form onSubmit={handleApplyPromo} className="flex gap-2">
                 <div className="relative flex-1">
-                  <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+                  <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
                   <input
                     type="text"
                     placeholder="Promo (AURA20 or CYBER3D)"
                     value={promoInput}
                     onChange={(e) => setPromoInput(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-900 border border-white/10 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500"
+                    className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-white border border-slate-900/10 text-slate-800 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-mono text-cyan-300 font-semibold border border-white/10"
+                  className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-mono text-cyan-300 font-semibold border border-slate-900/10"
                 >
                   Apply
                 </button>
@@ -241,9 +241,9 @@ export default function CartDrawer() {
 
               {/* Price Breakdown */}
               <div className="space-y-1.5 text-xs font-mono">
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-slate-500">
                   <span>Subtotal</span>
-                  <span className="text-slate-200">${cartSubtotal.toFixed(2)}</span>
+                  <span className="text-slate-700">${cartSubtotal.toFixed(2)}</span>
                 </div>
                 {discountAmount > 0 && (
                   <div className="flex justify-between text-emerald-400">
@@ -251,13 +251,13 @@ export default function CartDrawer() {
                     <span>-${discountAmount.toFixed(2)}</span>
                   </div>
                 )}
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-slate-500">
                   <span>Courier Delivery</span>
                   <span className="text-emerald-400 font-semibold">
                     {cartSubtotal >= freeShippingThreshold ? 'FREE' : '$15.00'}
                   </span>
                 </div>
-                <div className="flex justify-between text-base font-bold text-white pt-2 border-t border-white/10">
+                <div className="flex justify-between text-base font-bold text-slate-900 pt-2 border-t border-slate-900/10">
                   <span>Total</span>
                   <span className="font-extrabold text-cyan-400 font-mono">
                     ${cartTotal.toFixed(2)}

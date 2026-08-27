@@ -73,7 +73,7 @@ export default function ProductCard({ product }) {
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="group relative rounded-3xl glass-panel border border-white/10 hover:border-cyan-500/40 transition-all duration-300 p-5 flex flex-col justify-between overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-cyan-500/10"
+      className="group relative rounded-3xl glass-panel border border-slate-900/10 hover:border-cyan-500/40 transition-all duration-300 p-5 flex flex-col justify-between overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-cyan-500/10"
     >
       {/* Background Hover Glow */}
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -106,7 +106,7 @@ export default function ProductCard({ product }) {
             className={`p-2 rounded-xl transition-all ${
               isCompared
                 ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
-                : 'text-slate-400 hover:text-white hover:bg-white/10'
+                : 'text-slate-500 hover:text-slate-900 hover:bg-white/5'
             }`}
           >
             <Scale className="w-4 h-4" />
@@ -121,7 +121,7 @@ export default function ProductCard({ product }) {
             className={`p-2 rounded-xl transition-all ${
               isFavorited
                 ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40'
-                : 'text-slate-400 hover:text-rose-400 hover:bg-white/10'
+                : 'text-slate-500 hover:text-rose-400 hover:bg-white/5'
             }`}
           >
             <Heart className={`w-4 h-4 ${isFavorited ? 'fill-rose-400' : ''}`} />
@@ -152,7 +152,7 @@ export default function ProductCard({ product }) {
       <div className="relative z-10 space-y-3 pt-2">
         
         {/* Category & Brand */}
-        <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
+        <div className="flex items-center justify-between text-[11px] font-mono text-slate-500">
           <span className="uppercase tracking-wider text-cyan-400/90 font-semibold">{product.category}</span>
           <span>{product.brandName}</span>
         </div>
@@ -176,7 +176,7 @@ export default function ProductCard({ product }) {
               style={{ backgroundColor: c.hex }}
             />
           ))}
-          <span className="text-[10px] font-mono text-slate-400 ml-1">
+          <span className="text-[10px] font-mono text-slate-500 ml-1">
             {activeColor.name}
           </span>
         </div>
@@ -185,11 +185,11 @@ export default function ProductCard({ product }) {
         <div>
           <h3
             onClick={() => openProductDetail(product, activeColor, activeSize)}
-            className="text-base font-bold text-white font-['Space_Grotesk'] hover:text-cyan-400 transition-colors cursor-pointer line-clamp-1"
+            className="text-base font-bold text-slate-900 font-['Space_Grotesk'] hover:text-cyan-400 transition-colors cursor-pointer line-clamp-1"
           >
             {product.name}
           </h3>
-          <p className="text-xs text-slate-400 line-clamp-2 mt-1 font-light leading-relaxed">
+          <p className="text-xs text-slate-500 line-clamp-2 mt-1 font-light leading-relaxed">
             {product.shortDesc}
           </p>
         </div>
@@ -208,7 +208,7 @@ export default function ProductCard({ product }) {
                 className={`px-2 py-0.5 rounded-lg text-[10px] font-mono shrink-0 transition-all ${
                   idx === selectedSizeIdx
                     ? 'bg-cyan-500/20 border border-cyan-400 text-cyan-300 font-bold'
-                    : 'glass-panel text-slate-400 hover:text-white border-white/5'
+                    : 'glass-panel text-slate-500 hover:text-slate-900 border-slate-900/6'
                 }`}
               >
                 {s}
@@ -221,7 +221,7 @@ export default function ProductCard({ product }) {
         <div className="flex items-center justify-between text-xs font-mono pt-1">
           <div className="flex items-center gap-1 text-amber-400">
             <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-            <span className="font-bold text-slate-200">{product.rating}</span>
+            <span className="font-bold text-slate-700">{product.rating}</span>
             <span className="text-slate-500 text-[11px]">({product.reviewCount})</span>
           </div>
 
@@ -231,9 +231,9 @@ export default function ProductCard({ product }) {
         </div>
 
         {/* Price & Action Buttons */}
-        <div className="flex items-center justify-between gap-2 pt-3 border-t border-white/5">
+        <div className="flex items-center justify-between gap-2 pt-3 border-t border-slate-900/6">
           <div>
-            <span className="text-xl font-extrabold text-white font-mono">
+            <span className="text-xl font-extrabold text-slate-900 font-mono">
               ${product.price}
             </span>
             {product.originalPrice && (
@@ -246,7 +246,7 @@ export default function ProductCard({ product }) {
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => openProductDetail(product, activeColor, activeSize)}
-              className="px-3 py-2 rounded-xl glass-panel border border-white/10 hover:border-cyan-500/40 text-slate-300 hover:text-white text-xs font-mono font-medium transition-all"
+              className="px-3 py-2 rounded-xl glass-panel border border-slate-900/10 hover:border-cyan-500/40 text-slate-600 hover:text-slate-900 text-xs font-mono font-medium transition-all"
             >
               View Details
             </button>

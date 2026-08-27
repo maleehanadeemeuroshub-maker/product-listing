@@ -84,8 +84,8 @@ export default function Spatial3DCarousel({ products }) {
               }}
               className={`absolute w-72 sm:w-84 rounded-3xl p-6 glass-panel border transition-shadow duration-500 cursor-pointer ${
                 isCenter
-                  ? 'border-cyan-500/50 shadow-2xl shadow-cyan-500/20 bg-slate-900/90'
-                  : 'border-white/10 hover:border-white/20 bg-slate-950/70'
+                  ? 'border-cyan-500/50 shadow-2xl shadow-cyan-500/20 bg-white/90'
+                  : 'border-slate-900/10 hover:border-slate-900/15 bg-white/70'
               }`}
             >
               {/* Top Tag */}
@@ -106,15 +106,15 @@ export default function Spatial3DCarousel({ products }) {
 
               {/* Product Info */}
               <div className="space-y-2 mt-2">
-                <h3 className="text-base font-bold text-white font-['Space_Grotesk'] line-clamp-1">
+                <h3 className="text-base font-bold text-slate-900 font-['Space_Grotesk'] line-clamp-1">
                   {product.name}
                 </h3>
-                <p className="text-xs text-slate-400 line-clamp-2 font-light">
+                <p className="text-xs text-slate-500 line-clamp-2 font-light">
                   {product.shortDesc}
                 </p>
 
-                <div className="flex items-center justify-between pt-3 border-t border-white/10">
-                  <span className="text-xl font-extrabold font-mono text-white">
+                <div className="flex items-center justify-between pt-3 border-t border-slate-900/10">
+                  <span className="text-xl font-extrabold font-mono text-slate-900">
                     ${product.price}
                   </span>
 
@@ -142,7 +142,7 @@ export default function Spatial3DCarousel({ products }) {
                       </button>
                     </div>
                   ) : (
-                    <span className="text-xs font-mono text-slate-400">
+                    <span className="text-xs font-mono text-slate-500">
                       Click to focus
                     </span>
                   )}
@@ -157,13 +157,13 @@ export default function Spatial3DCarousel({ products }) {
       <div className="flex items-center justify-center gap-4 mt-6">
         <button
           onClick={handlePrev}
-          className="p-3 rounded-2xl glass-panel border border-white/10 text-slate-300 hover:text-white hover:border-cyan-500/40 hover:scale-110 active:scale-95 transition-all shadow-lg"
+          className="p-3 rounded-2xl glass-panel border border-slate-900/10 text-slate-600 hover:text-slate-900 hover:border-cyan-500/40 hover:scale-110 active:scale-95 transition-all shadow-lg"
           title="Previous Product (Left Arrow)"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center gap-1.5 px-4 py-2 rounded-full glass-panel border border-white/10 font-mono text-xs text-slate-400">
+        <div className="flex items-center gap-1.5 px-4 py-2 rounded-full glass-panel border border-slate-900/10 font-mono text-xs text-slate-500">
           <span className="text-cyan-400 font-bold">{activeIndex + 1}</span>
           <span>/</span>
           <span>{total}</span>
@@ -171,7 +171,7 @@ export default function Spatial3DCarousel({ products }) {
 
         <button
           onClick={handleNext}
-          className="p-3 rounded-2xl glass-panel border border-white/10 text-slate-300 hover:text-white hover:border-cyan-500/40 hover:scale-110 active:scale-95 transition-all shadow-lg"
+          className="p-3 rounded-2xl glass-panel border border-slate-900/10 text-slate-600 hover:text-slate-900 hover:border-cyan-500/40 hover:scale-110 active:scale-95 transition-all shadow-lg"
           title="Next Product (Right Arrow)"
         >
           <ChevronRight className="w-5 h-5" />

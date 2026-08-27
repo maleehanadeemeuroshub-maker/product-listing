@@ -38,9 +38,9 @@ export function StoreProvider({ children }) {
   const [wishlist, setWishlist] = useState(() => {
     try {
       const saved = localStorage.getItem('aura_wishlist');
-      return saved ? JSON.parse(saved) : ['aura-pro-headphones', 'vortex-cyberphone-pro'];
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return ['aura-pro-headphones', 'vortex-cyberphone-pro'];
+      return [];
     }
   });
 

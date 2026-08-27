@@ -12,16 +12,16 @@ export default function EmptyState({
     icon === 'cart' ? ShoppingBag : icon === 'box' ? Box : SearchX;
 
   return (
-    <div className="w-full py-16 px-6 rounded-3xl glass-panel border border-white/10 text-center space-y-4 max-w-lg mx-auto my-8 shadow-xl">
+    <div className="w-full py-16 px-6 rounded-3xl glass-panel border border-slate-900/10 text-center space-y-4 max-w-lg mx-auto my-8 shadow-xl">
       <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mx-auto">
         <IconComponent className="w-8 h-8" />
       </div>
 
       <div className="space-y-1">
-        <h3 className="text-lg font-bold font-['Space_Grotesk'] text-white">
+        <h3 className="text-lg font-bold font-['Space_Grotesk'] text-slate-900">
           {title}
         </h3>
-        <p className="text-xs text-slate-400 font-mono leading-relaxed max-w-md mx-auto">
+        <p className="text-xs text-slate-500 font-mono leading-relaxed max-w-md mx-auto">
           {description}
         </p>
       </div>

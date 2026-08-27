@@ -3,9 +3,9 @@ import { DollarSign } from 'lucide-react';
 
 export default function PriceFilter({ maxPrice = 2000, currentPrice, onChange }) {
   return (
-    <div className="p-4 rounded-2xl glass-panel border border-white/10 space-y-2.5">
+    <div className="p-4 rounded-2xl glass-panel border border-slate-900/10 space-y-2.5">
       <div className="flex items-center justify-between text-xs font-mono">
-        <span className="flex items-center gap-1 uppercase tracking-widest text-slate-300 font-bold">
+        <span className="flex items-center gap-1 uppercase tracking-widest text-slate-600 font-bold">
           <DollarSign className="w-3.5 h-3.5 text-cyan-400" />
           Max Price Filter
         </span>
@@ -21,7 +21,7 @@ export default function PriceFilter({ maxPrice = 2000, currentPrice, onChange })
         step="10"
         value={currentPrice}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+        className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-cyan-400"
       />
 
       <div className="flex justify-between text-[10px] font-mono text-slate-500">

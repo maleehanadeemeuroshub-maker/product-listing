@@ -21,7 +21,7 @@ export default function ToastContainer() {
                 ? 'border-emerald-500/40 bg-emerald-950/80 text-emerald-200'
                 : isWarning
                 ? 'border-amber-500/40 bg-amber-950/80 text-amber-200'
-                : 'border-cyan-500/40 bg-slate-950/80 text-cyan-200'
+                : 'border-cyan-500/40 bg-white/80 text-cyan-200'
             }`}
           >
             {isSuccess ? (

@@ -43,7 +43,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full glass-panel border-b border-white/10 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 w-full glass-panel border-b border-slate-900/10 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
         
         {/* Brand Logo */}
@@ -58,15 +58,15 @@ export default function Navbar() {
             className="group flex items-center gap-2.5"
           >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-purple-500 p-[1.5px] shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition-all duration-300">
-              <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+              <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-cyan-400 group-hover:rotate-12 transition-transform duration-300" />
               </div>
             </div>
             <div>
-              <span className="text-xl font-bold tracking-tight font-['Space_Grotesk'] text-white flex items-center gap-1">
+              <span className="text-xl font-bold tracking-tight font-['Space_Grotesk'] text-slate-900 flex items-center gap-1">
                 AURA<span className="text-cyan-400">3D</span>
               </span>
-              <span className="block text-[10px] font-mono tracking-widest text-slate-400 uppercase -mt-1">
+              <span className="block text-[10px] font-mono tracking-widest text-slate-500 uppercase -mt-1">
                 Spatial Showcase
               </span>
             </div>
@@ -81,7 +81,7 @@ export default function Navbar() {
                 sound.playClick();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="text-slate-300 hover:text-cyan-400 transition-colors"
+              className="text-slate-600 hover:text-cyan-400 transition-colors"
             >
               Home
             </a>
@@ -91,7 +91,7 @@ export default function Navbar() {
                 e.preventDefault();
                 scrollToSection('catalog');
               }}
-              className="text-slate-300 hover:text-cyan-400 transition-colors"
+              className="text-slate-600 hover:text-cyan-400 transition-colors"
             >
               Products
             </a>
@@ -101,7 +101,7 @@ export default function Navbar() {
                 e.preventDefault();
                 scrollToSection('catalog');
               }}
-              className="text-slate-300 hover:text-cyan-400 transition-colors"
+              className="text-slate-600 hover:text-cyan-400 transition-colors"
             >
               Categories
             </a>
@@ -113,11 +113,11 @@ export default function Navbar() {
           <div
             className={`relative rounded-xl transition-all duration-300 ${
               isSearchFocused
-                ? 'ring-2 ring-cyan-500/50 bg-slate-900/90 shadow-lg shadow-cyan-500/10'
-                : 'bg-slate-900/50 hover:bg-slate-900/80 border border-white/10'
+                ? 'ring-2 ring-cyan-500/50 bg-white/90 shadow-lg shadow-cyan-500/10'
+                : 'bg-slate-50/80 hover:bg-white/80 border border-slate-900/10'
             }`}
           >
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
             <input
               type="text"
               placeholder="Search 3D headphones, watches, phones, drones..."
@@ -128,12 +128,12 @@ export default function Navbar() {
                 setIsSearchFocused(true);
               }}
               onBlur={() => setIsSearchFocused(false)}
-              className="w-full pl-10 pr-9 py-2 text-sm bg-transparent text-slate-100 placeholder:text-slate-500 focus:outline-none"
+              className="w-full pl-10 pr-9 py-2 text-sm bg-transparent text-slate-800 placeholder:text-slate-500 focus:outline-none"
             />
             {filters.searchQuery && (
               <button
                 onClick={() => setFilters(prev => ({ ...prev, searchQuery: '' }))}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-white/10 text-slate-400"
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-white/5 text-slate-500"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -154,7 +154,7 @@ export default function Navbar() {
             className={`p-2.5 rounded-xl transition-all border ${
               soundEnabled
                 ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20'
-                : 'bg-slate-900/50 border-white/10 text-slate-500 hover:text-slate-300'
+                : 'bg-slate-50/80 border-slate-900/10 text-slate-500 hover:text-slate-600'
             }`}
           >
             {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
@@ -167,7 +167,7 @@ export default function Navbar() {
                 sound.playClick();
                 setIsCompareOpen(true);
               }}
-              className="relative p-2.5 rounded-xl bg-slate-900/50 border border-white/10 text-slate-300 hover:text-white hover:border-cyan-500/40 transition-all flex items-center gap-1.5"
+              className="relative p-2.5 rounded-xl bg-slate-50/80 border border-slate-900/10 text-slate-600 hover:text-slate-900 hover:border-cyan-500/40 transition-all flex items-center gap-1.5"
             >
               <Scale className="w-4 h-4 text-cyan-400" />
               <span className="hidden sm:inline text-xs font-mono font-medium">Compare</span>
@@ -184,11 +184,11 @@ export default function Navbar() {
               setIsWishlistOpen(true);
             }}
             title="Open Wishlist"
-            className="relative p-2.5 rounded-xl bg-slate-900/50 border border-white/10 text-slate-300 hover:text-rose-400 hover:border-rose-500/30 transition-all"
+            className="relative p-2.5 rounded-xl bg-slate-50/80 border border-slate-900/10 text-slate-600 hover:text-rose-400 hover:border-rose-500/30 transition-all"
           >
             <Heart className={`w-4 h-4 ${wishlist.length > 0 ? 'text-rose-400 fill-rose-400/20' : ''}`} />
             {wishlist.length > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white font-bold text-[10px] flex items-center justify-center shadow-lg shadow-rose-500/50 animate-pulse">
+              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-slate-900 font-bold text-[10px] flex items-center justify-center shadow-lg shadow-rose-500/50 animate-pulse">
                 {wishlist.length}
               </span>
             )}
@@ -201,14 +201,14 @@ export default function Navbar() {
                 sound.playClick();
                 setIsProfileDrawerOpen(true);
               }}
-              className="flex items-center gap-2 p-1.5 pr-3 rounded-2xl glass-panel border border-cyan-500/40 hover:bg-white/10 transition-all"
+              className="flex items-center gap-2 p-1.5 pr-3 rounded-2xl glass-panel border border-cyan-500/40 hover:bg-white/5 transition-all"
             >
               <img
                 src={user.avatar}
                 alt={user.name}
                 className="w-7 h-7 rounded-xl object-cover border border-cyan-400/50"
               />
-              <span className="text-xs font-mono font-bold text-white hidden sm:inline">
+              <span className="text-xs font-mono font-bold text-slate-900 hidden sm:inline">
                 {user.name.split(' ')[0]}
               </span>
             </button>
@@ -219,7 +219,7 @@ export default function Navbar() {
                 setAuthMode('login');
                 setIsAuthModalOpen(true);
               }}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl glass-panel border border-white/15 text-slate-200 hover:text-white hover:border-cyan-500/40 text-xs font-mono font-bold transition-all"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl glass-panel border border-slate-900/12 text-slate-700 hover:text-slate-900 hover:border-cyan-500/40 text-xs font-mono font-bold transition-all"
             >
               <User className="w-3.5 h-3.5 text-cyan-400" />
               <span className="hidden sm:inline">Sign In</span>
@@ -236,7 +236,7 @@ export default function Navbar() {
           >
             <ShoppingBag className="w-4 h-4" />
             <span className="hidden sm:inline font-mono">Cart</span>
-            <span className="px-1.5 py-0.5 rounded-md bg-black/20 text-xs font-mono font-bold">
+            <span className="px-1.5 py-0.5 rounded-md bg-white/5 text-xs font-mono font-bold">
               {cartItemsCount}
             </span>
           </button>
@@ -246,14 +246,14 @@ export default function Navbar() {
 
       {/* Mobile Search Bar */}
       <div className="px-4 pb-3 md:hidden">
-        <div className="relative rounded-xl bg-slate-900/70 border border-white/10">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <div className="relative rounded-xl bg-white/70 border border-slate-900/10">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
           <input
             type="text"
             placeholder="Search 3D catalog..."
             value={filters.searchQuery}
             onChange={(e) => setFilters(prev => ({ ...prev, searchQuery: e.target.value }))}
-            className="w-full pl-10 pr-4 py-2 text-sm bg-transparent text-slate-100 placeholder:text-slate-500 focus:outline-none"
+            className="w-full pl-10 pr-4 py-2 text-sm bg-transparent text-slate-800 placeholder:text-slate-500 focus:outline-none"
           />
         </div>
       </div>

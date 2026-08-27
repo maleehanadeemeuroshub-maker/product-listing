@@ -320,7 +320,7 @@ export default function Product3DViewer({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full h-full min-h-[380px] select-none overflow-hidden rounded-2xl bg-gradient-to-b from-slate-900/60 via-slate-950/80 to-[#090b10] border border-white/10 ${className}`}
+      className={`relative w-full h-full min-h-[380px] select-none overflow-hidden rounded-2xl bg-gradient-to-b from-slate-50/90 via-white/80 to-white border border-slate-900/10 ${className}`}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -345,7 +345,7 @@ export default function Product3DViewer({
       </div>
 
       {/* Interactive Control Overlay Bar */}
-      <div className="absolute top-4 right-4 flex items-center gap-1.5 p-1.5 rounded-xl glass-panel border border-white/10 shadow-xl backdrop-blur-md">
+      <div className="absolute top-4 right-4 flex items-center gap-1.5 p-1.5 rounded-xl glass-panel border border-slate-900/10 shadow-xl backdrop-blur-md">
         <button
           onClick={() => {
             sound.playClick();
@@ -353,7 +353,7 @@ export default function Product3DViewer({
           }}
           title={isAutoSpin ? 'Pause Auto-Spin' : 'Resume Auto-Spin'}
           className={`p-2 rounded-lg transition-all ${
-            isAutoSpin ? 'bg-cyan-500/20 text-cyan-400' : 'text-slate-400 hover:text-white hover:bg-white/5'
+            isAutoSpin ? 'bg-cyan-500/20 text-cyan-400' : 'text-slate-500 hover:text-slate-900 hover:bg-white/5'
           }`}
         >
           {isAutoSpin ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
@@ -366,7 +366,7 @@ export default function Product3DViewer({
           }}
           title="Toggle Wireframe Blueprint"
           className={`p-2 rounded-lg transition-all ${
-            isWireframe ? 'bg-cyan-500/20 text-cyan-400' : 'text-slate-400 hover:text-white hover:bg-white/5'
+            isWireframe ? 'bg-cyan-500/20 text-cyan-400' : 'text-slate-500 hover:text-slate-900 hover:bg-white/5'
           }`}
         >
           <Grid className="w-4 h-4" />
@@ -380,7 +380,7 @@ export default function Product3DViewer({
             setLightingPreset(presets[nextIdx]);
           }}
           title={`Lighting: ${lightingPreset.toUpperCase()} (Click to Cycle)`}
-          className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all flex items-center gap-1 text-xs font-mono"
+          className="p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-white/5 transition-all flex items-center gap-1 text-xs font-mono"
         >
           <Sun className="w-4 h-4 text-amber-400" />
           <span className="capitalize hidden sm:inline">{lightingPreset}</span>
@@ -389,7 +389,7 @@ export default function Product3DViewer({
         <button
           onClick={takeSnapshot}
           title="Download High-Res 3D Snapshot"
-          className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+          className="p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-white/5 transition-all"
         >
           <Camera className="w-4 h-4 text-emerald-400" />
         </button>
@@ -397,7 +397,7 @@ export default function Product3DViewer({
         <button
           onClick={resetView}
           title="Reset Camera & Rotation"
-          className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+          className="p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-white/5 transition-all"
         >
           <RotateCcw className="w-4 h-4" />
         </button>
@@ -405,9 +405,9 @@ export default function Product3DViewer({
 
       {/* Exploded View Control Slider */}
       {enableExplodeControl && (
-        <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-72 p-3 rounded-xl glass-panel border border-white/10 shadow-2xl backdrop-blur-md">
+        <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-72 p-3 rounded-xl glass-panel border border-slate-900/10 shadow-2xl backdrop-blur-md">
           <div className="flex items-center justify-between text-xs font-mono mb-2">
-            <span className="flex items-center gap-1.5 text-slate-300 font-medium">
+            <span className="flex items-center gap-1.5 text-slate-600 font-medium">
               <Layers className="w-3.5 h-3.5 text-cyan-400" />
               3D Exploded Teardown
             </span>
@@ -425,7 +425,7 @@ export default function Product3DViewer({
               setExplodeValue(val);
               if (val > 0 && explodeValue === 0) sound.playExplode();
             }}
-            className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+            className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-cyan-400"
           />
 
           <div className="flex justify-between text-[10px] text-slate-500 font-mono mt-1">
@@ -437,12 +437,12 @@ export default function Product3DViewer({
 
       {/* Interaction Hint */}
       <div
-        className={`absolute bottom-4 left-4 text-xs font-mono text-slate-400/80 pointer-events-none transition-opacity duration-300 hidden md:flex items-center gap-1.5 ${
+        className={`absolute bottom-4 left-4 text-xs font-mono text-slate-500/80 pointer-events-none transition-opacity duration-300 hidden md:flex items-center gap-1.5 ${
           isInteracting ? 'opacity-0' : 'opacity-100'
         }`}
       >
-        <span className="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-slate-300">Drag</span> to rotate •{' '}
-        <span className="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-slate-300">Scroll</span> to zoom
+        <span className="px-1.5 py-0.5 rounded bg-white/5 text-[10px] text-slate-600">Drag</span> to rotate •{' '}
+        <span className="px-1.5 py-0.5 rounded bg-white/5 text-[10px] text-slate-600">Scroll</span> to zoom
       </div>
     </div>
   );

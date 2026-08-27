@@ -12,7 +12,7 @@ export default function ErrorState({
       </div>
 
       <div className="space-y-1">
-        <h3 className="text-lg font-bold font-['Space_Grotesk'] text-white">
+        <h3 className="text-lg font-bold font-['Space_Grotesk'] text-slate-900">
           API Connection Error
         </h3>
         <p className="text-xs text-rose-200/80 font-mono leading-relaxed max-w-md mx-auto">
@@ -23,7 +23,7 @@ export default function ErrorState({
       {onRetry && (
         <button
           onClick={onRetry}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white font-mono font-bold text-xs shadow-lg shadow-rose-500/20 active:scale-95 transition-all"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-slate-900 font-mono font-bold text-xs shadow-lg shadow-rose-500/20 active:scale-95 transition-all"
         >
           <RotateCcw className="w-3.5 h-3.5" />
           <span>Retry Request</span>

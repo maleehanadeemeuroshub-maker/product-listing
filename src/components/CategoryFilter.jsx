@@ -11,7 +11,7 @@ export default function CategoryFilter({
     <div className="w-full">
       <div className="flex items-center gap-2 mb-3">
         <Layers className="w-4 h-4 text-cyan-400" />
-        <h3 className="text-xs font-mono uppercase tracking-widest text-slate-300 font-bold">
+        <h3 className="text-xs font-mono uppercase tracking-widest text-slate-600 font-bold">
           Categories
         </h3>
       </div>
@@ -21,7 +21,7 @@ export default function CategoryFilter({
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
-              className="h-8 w-24 rounded-xl bg-slate-800/60 animate-pulse shrink-0"
+              className="h-8 w-24 rounded-xl bg-slate-100/70 animate-pulse shrink-0"
             />
           ))}
         </div>
@@ -33,7 +33,7 @@ export default function CategoryFilter({
             className={`px-3.5 py-1.5 rounded-xl text-xs font-mono transition-all flex items-center gap-1.5 ${
               selectedCategory === 'all'
                 ? 'bg-cyan-500 text-black font-bold shadow-md shadow-cyan-500/20 scale-105'
-                : 'glass-panel border-white/10 text-slate-300 hover:text-white hover:border-white/20'
+                : 'glass-panel border-slate-900/10 text-slate-600 hover:text-slate-900 hover:border-slate-900/15'
             }`}
           >
             <Sparkles className="w-3 h-3" />
@@ -53,7 +53,7 @@ export default function CategoryFilter({
                 className={`px-3 py-1.5 rounded-xl text-xs font-mono capitalize transition-all shrink-0 ${
                   isSelected
                     ? 'bg-cyan-500 text-black font-bold shadow-md shadow-cyan-500/20 scale-105'
-                    : 'glass-panel border-white/10 text-slate-400 hover:text-white hover:border-white/20'
+                    : 'glass-panel border-slate-900/10 text-slate-500 hover:text-slate-900 hover:border-slate-900/15'
                 }`}
               >
                 {name.replace(/-/g, ' ')}

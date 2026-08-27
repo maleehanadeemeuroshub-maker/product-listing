@@ -16,7 +16,7 @@ import { Sparkles, Layers, Box, Cpu } from 'lucide-react';
 
 export default function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#090b10] text-slate-100 font-['Plus_Jakarta_Sans',sans-serif]">
+    <div className="min-h-screen flex flex-col bg-white text-slate-800 font-['Plus_Jakarta_Sans',sans-serif]">
       {/* Top Navbar */}
       <Navbar />
 
@@ -27,18 +27,18 @@ export default function App() {
       <main id="catalog" className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-12">
         
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-white/10">
+        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-slate-900/10">
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-cyan-400 font-semibold mb-1">
               <Cpu className="w-3.5 h-3.5" />
               <span>Full Interactive 3D Hardware Catalog</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold font-['Space_Grotesk'] text-white">
+            <h2 className="text-3xl sm:text-4xl font-extrabold font-['Space_Grotesk'] text-slate-900">
               Explore Spatial Hardware
             </h2>
           </div>
 
-          <div className="flex items-center gap-3 text-xs font-mono text-slate-400">
+          <div className="flex items-center gap-3 text-xs font-mono text-slate-500">
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               60 FPS WebGL

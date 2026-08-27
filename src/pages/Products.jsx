@@ -144,7 +144,7 @@ export default function Products() {
     <div className="space-y-8 pb-12">
       
       {/* Hero Welcome Banner */}
-      <section className="relative rounded-3xl overflow-hidden glass-panel border border-cyan-500/30 p-6 sm:p-10 lg:p-12 shadow-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-[#070b14]">
+      <section className="relative rounded-3xl overflow-hidden glass-panel border border-cyan-500/30 p-6 sm:p-10 lg:p-12 shadow-2xl bg-gradient-to-r from-white via-slate-50 to-[#070b14]">
         <div className="absolute top-0 right-0 -mt-8 -mr-8 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 max-w-2xl space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 font-mono text-xs font-bold uppercase tracking-wider">
@@ -152,11 +152,11 @@ export default function Products() {
             <span>Week 7 REST API E-Commerce Platform</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-['Space_Grotesk'] text-white tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-['Space_Grotesk'] text-slate-900 tracking-tight leading-tight">
             Discover Live Products from <span className="text-gradient-cyan">DummyJSON API</span>
           </h1>
 
-          <p className="text-sm sm:text-base text-slate-300 font-light leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-600 font-light leading-relaxed">
             Real-time REST API integration with Axios, category filtering, dynamic searches, sorting algorithms, and persistent cart management.
           </p>
         </div>
@@ -181,7 +181,7 @@ export default function Products() {
             <button
               onClick={handleResetFilters}
               title="Reset all filters"
-              className="p-2.5 rounded-2xl glass-panel border border-white/10 text-slate-400 hover:text-white hover:border-cyan-500/40 transition-colors flex items-center gap-1.5 text-xs font-mono"
+              className="p-2.5 rounded-2xl glass-panel border border-slate-900/10 text-slate-500 hover:text-slate-900 hover:border-cyan-500/40 transition-colors flex items-center gap-1.5 text-xs font-mono"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Reset</span>
@@ -190,7 +190,7 @@ export default function Products() {
         </div>
 
         {/* Categories Bar */}
-        <div className="p-4 rounded-3xl glass-panel border border-white/10">
+        <div className="p-4 rounded-3xl glass-panel border border-slate-900/10">
           <CategoryFilter
             categories={categories}
             selectedCategory={selectedCategory}
@@ -201,7 +201,7 @@ export default function Products() {
 
         {/* Secondary Filter: Max Price Slider & Live Results Status */}
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
+          <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
             <span>Active Status:</span>
             <span className="text-cyan-400 font-bold">
               {isLoading ? 'Fetching API...' : `${totalProducts} Total API Products`}

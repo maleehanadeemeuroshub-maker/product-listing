@@ -80,14 +80,14 @@ export default function ProductDetails() {
   if (isLoading) {
     return (
       <div className="py-12 space-y-8 animate-pulse">
-        <div className="h-6 w-32 bg-slate-800 rounded-md" />
+        <div className="h-6 w-32 bg-slate-100 rounded-md" />
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-          <div className="lg:col-span-6 h-96 bg-slate-800/60 rounded-3xl" />
+          <div className="lg:col-span-6 h-96 bg-slate-100/70 rounded-3xl" />
           <div className="lg:col-span-6 space-y-4">
-            <div className="h-8 w-3/4 bg-slate-800/80 rounded-md" />
-            <div className="h-4 w-1/3 bg-slate-800/60 rounded-md" />
-            <div className="h-24 w-full bg-slate-800/40 rounded-2xl" />
-            <div className="h-10 w-1/2 bg-slate-800/80 rounded-xl" />
+            <div className="h-8 w-3/4 bg-slate-100/90 rounded-md" />
+            <div className="h-4 w-1/3 bg-slate-100/70 rounded-md" />
+            <div className="h-24 w-full bg-slate-100/50 rounded-2xl" />
+            <div className="h-10 w-1/2 bg-slate-100/90 rounded-xl" />
           </div>
         </div>
       </div>
@@ -128,7 +128,7 @@ export default function ProductDetails() {
       <div>
         <Link
           to="/products"
-          className="inline-flex items-center gap-2 text-xs font-mono text-slate-400 hover:text-cyan-400 transition-colors p-2 rounded-xl glass-panel border border-white/10"
+          className="inline-flex items-center gap-2 text-xs font-mono text-slate-500 hover:text-cyan-400 transition-colors p-2 rounded-xl glass-panel border border-slate-900/10"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Products</span>
@@ -141,7 +141,7 @@ export default function ProductDetails() {
         {/* Left Column: Interactive Image Gallery */}
         <div className="lg:col-span-6 space-y-4">
           {/* Main Large Image Stage */}
-          <div className="relative w-full h-[380px] sm:h-[450px] rounded-3xl glass-panel border border-white/10 p-8 flex items-center justify-center overflow-hidden bg-slate-900/60 shadow-2xl">
+          <div className="relative w-full h-[380px] sm:h-[450px] rounded-3xl glass-panel border border-slate-900/10 p-8 flex items-center justify-center overflow-hidden bg-slate-50/90 shadow-2xl">
             <img
               src={selectedImage}
               alt={product.title}
@@ -162,10 +162,10 @@ export default function ProductDetails() {
                 <button
                   key={idx}
                   onClick={() => setSelectedImage(img)}
-                  className={`w-20 h-20 rounded-2xl p-2 shrink-0 bg-slate-900/80 border transition-all flex items-center justify-center overflow-hidden ${
+                  className={`w-20 h-20 rounded-2xl p-2 shrink-0 bg-white/80 border transition-all flex items-center justify-center overflow-hidden ${
                     selectedImage === img
                       ? 'border-cyan-400 ring-2 ring-cyan-400/50 scale-105'
-                      : 'border-white/10 hover:border-white/30 opacity-70 hover:opacity-100'
+                      : 'border-slate-900/10 hover:border-slate-900/20 opacity-70 hover:opacity-100'
                   }`}
                 >
                   <img src={img} alt="" className="max-h-full max-w-full object-contain" />
@@ -184,11 +184,11 @@ export default function ProductDetails() {
               <span className="px-2.5 py-1 rounded-lg bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 font-bold uppercase tracking-wider">
                 {product.category}
               </span>
-              <span className="text-slate-400">Brand: <strong className="text-white">{product.brand || 'Original Brand'}</strong></span>
+              <span className="text-slate-500">Brand: <strong className="text-slate-900">{product.brand || 'Original Brand'}</strong></span>
               <span className="text-slate-500">• SKU: #{product.sku || product.id}</span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-['Space_Grotesk'] text-white leading-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-['Space_Grotesk'] text-slate-900 leading-tight">
               {product.title}
             </h1>
 
@@ -199,21 +199,21 @@ export default function ProductDetails() {
                   <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                 ))}
               </div>
-              <span className="font-bold text-white text-sm">{product.rating}</span>
-              <span className="text-slate-400">({product.reviews?.length || 18} customer reviews)</span>
+              <span className="font-bold text-slate-900 text-sm">{product.rating}</span>
+              <span className="text-slate-500">({product.reviews?.length || 18} customer reviews)</span>
             </div>
           </div>
 
           {/* Description */}
-          <p className="text-sm text-slate-300 leading-relaxed font-light">
+          <p className="text-sm text-slate-600 leading-relaxed font-light">
             {product.description}
           </p>
 
           {/* Price Box & Stock Indicator */}
-          <div className="p-5 rounded-2xl glass-panel border border-white/10 space-y-3">
+          <div className="p-5 rounded-2xl glass-panel border border-slate-900/10 space-y-3">
             <div className="flex items-baseline justify-between">
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl sm:text-4xl font-extrabold font-mono text-white">
+                <span className="text-3xl sm:text-4xl font-extrabold font-mono text-slate-900">
                   ${product.price}
                 </span>
                 {originalPrice && (
@@ -237,14 +237,14 @@ export default function ProductDetails() {
             </div>
 
             {/* Quantity Stepper */}
-            <div className="flex items-center justify-between pt-3 border-t border-white/5">
-              <span className="text-xs font-mono text-slate-300">Select Quantity:</span>
-              <div className="flex items-center gap-2 p-1 rounded-xl bg-slate-900 border border-white/10">
+            <div className="flex items-center justify-between pt-3 border-t border-slate-900/6">
+              <span className="text-xs font-mono text-slate-600">Select Quantity:</span>
+              <div className="flex items-center gap-2 p-1 rounded-xl bg-white border border-slate-900/10">
                 <button
                   type="button"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   disabled={quantity <= 1 || isOutOfStock}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-white disabled:opacity-30"
+                  className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 disabled:opacity-30"
                 >
                   <Minus className="w-3.5 h-3.5" />
                 </button>
@@ -255,7 +255,7 @@ export default function ProductDetails() {
                   type="button"
                   onClick={() => setQuantity(Math.min(product.stock || 99, quantity + 1))}
                   disabled={quantity >= product.stock || isOutOfStock}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-white disabled:opacity-30"
+                  className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 disabled:opacity-30"
                 >
                   <Plus className="w-3.5 h-3.5" />
                 </button>
@@ -272,7 +272,7 @@ export default function ProductDetails() {
                   isAdded
                     ? 'bg-emerald-500 text-black shadow-emerald-500/25'
                     : isOutOfStock
-                    ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                    ? 'bg-slate-100 text-slate-500 cursor-not-allowed'
                     : 'bg-cyan-500 hover:bg-cyan-400 text-black shadow-cyan-500/25 hover:shadow-cyan-500/40'
                 }`}
               >
@@ -293,7 +293,7 @@ export default function ProductDetails() {
                 type="button"
                 onClick={handleBuyNow}
                 disabled={isOutOfStock}
-                className="py-3.5 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white font-bold text-xs font-mono shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50"
+                className="py-3.5 rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-slate-900 font-bold text-xs font-mono shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50"
               >
                 <Zap className="w-4 h-4" />
                 <span>Instant Buy Now</span>
@@ -301,7 +301,7 @@ export default function ProductDetails() {
             </div>
 
             {/* Trust Assurances */}
-            <div className="grid grid-cols-3 gap-2 pt-3 text-[10px] font-mono text-slate-400 text-center border-t border-white/5">
+            <div className="grid grid-cols-3 gap-2 pt-3 text-[10px] font-mono text-slate-500 text-center border-t border-slate-900/6">
               <div className="flex items-center justify-center gap-1">
                 <Truck className="w-3.5 h-3.5 text-cyan-400" />
                 <span>Fast Courier</span>
@@ -320,17 +320,17 @@ export default function ProductDetails() {
 
           {/* Customer Reviews Section */}
           {product.reviews && product.reviews.length > 0 && (
-            <div className="p-5 rounded-2xl glass-panel border border-white/10 space-y-3">
-              <h3 className="text-xs font-mono uppercase tracking-widest text-slate-300 font-bold flex items-center gap-2">
+            <div className="p-5 rounded-2xl glass-panel border border-slate-900/10 space-y-3">
+              <h3 className="text-xs font-mono uppercase tracking-widest text-slate-600 font-bold flex items-center gap-2">
                 <Star className="w-3.5 h-3.5 text-amber-400" />
                 <span>Verified Customer Reviews</span>
               </h3>
 
               <div className="space-y-3 pt-1">
                 {product.reviews.map((rev, i) => (
-                  <div key={i} className="p-3 rounded-xl bg-slate-900/60 border border-white/5 space-y-1">
+                  <div key={i} className="p-3 rounded-xl bg-slate-50/90 border border-slate-900/6 space-y-1">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-white">{rev.reviewerName}</span>
+                      <span className="font-bold text-slate-900">{rev.reviewerName}</span>
                       <span className="text-[10px] font-mono text-slate-500">
                         {new Date(rev.date).toLocaleDateString()}
                       </span>
@@ -340,7 +340,7 @@ export default function ProductDetails() {
                         <Star key={r} className="w-3 h-3 fill-amber-400" />
                       ))}
                     </div>
-                    <p className="text-xs text-slate-300 font-light">{rev.comment}</p>
+                    <p className="text-xs text-slate-600 font-light">{rev.comment}</p>
                   </div>
                 ))}
               </div>
@@ -353,13 +353,13 @@ export default function ProductDetails() {
 
       {/* Related Category Products */}
       {relatedProducts.length > 0 && (
-        <section className="pt-8 border-t border-white/10 space-y-6">
+        <section className="pt-8 border-t border-slate-900/10 space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <span className="text-xs font-mono uppercase tracking-widest text-cyan-400 font-semibold block">
                 More in {product.category}
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold font-['Space_Grotesk'] text-white">
+              <h2 className="text-xl sm:text-2xl font-bold font-['Space_Grotesk'] text-slate-900">
                 Related Recommendations
               </h2>
             </div>

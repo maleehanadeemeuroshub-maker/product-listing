@@ -23,17 +23,17 @@ export default function UserProfileDrawer() {
   if (!isProfileDrawerOpen || !user) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-black/70 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 overflow-hidden bg-white/70 backdrop-blur-md animate-in fade-in duration-200">
       <div className="absolute inset-0" onClick={() => setIsProfileDrawerOpen(false)} />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-[#090d16] border-l border-white/10 p-6 flex flex-col justify-between shadow-2xl">
+        <div className="w-screen max-w-md bg-white border-l border-slate-900/10 p-6 flex flex-col justify-between shadow-2xl">
           
           {/* Header */}
-          <div className="flex items-center justify-between pb-4 border-b border-white/10 shrink-0">
+          <div className="flex items-center justify-between pb-4 border-b border-slate-900/10 shrink-0">
             <div className="flex items-center gap-2">
               <User className="w-5 h-5 text-cyan-400" />
-              <h2 className="text-lg font-bold font-['Space_Grotesk'] text-white">
+              <h2 className="text-lg font-bold font-['Space_Grotesk'] text-slate-900">
                 Member Profile
               </h2>
             </div>
@@ -42,7 +42,7 @@ export default function UserProfileDrawer() {
                 sound.playClick();
                 setIsProfileDrawerOpen(false);
               }}
-              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10"
+              className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-white/5"
             >
               <X className="w-5 h-5" />
             </button>
@@ -59,10 +59,10 @@ export default function UserProfileDrawer() {
                 className="w-14 h-14 rounded-2xl object-cover border border-cyan-400/40 shadow-lg shadow-cyan-500/20"
               />
               <div className="space-y-1">
-                <h3 className="text-base font-bold text-white font-['Space_Grotesk']">
+                <h3 className="text-base font-bold text-slate-900 font-['Space_Grotesk']">
                   {user.name}
                 </h3>
-                <p className="text-xs font-mono text-slate-400">{user.email}</p>
+                <p className="text-xs font-mono text-slate-500">{user.email}</p>
                 <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-mono font-bold">
                   <Sparkles className="w-3 h-3" />
                   <span>{user.role}</span>
@@ -72,7 +72,7 @@ export default function UserProfileDrawer() {
 
             {/* Orders Section */}
             <div className="space-y-3">
-              <h4 className="text-xs font-mono uppercase tracking-widest text-slate-400 font-semibold flex items-center gap-2">
+              <h4 className="text-xs font-mono uppercase tracking-widest text-slate-500 font-semibold flex items-center gap-2">
                 <Package className="w-4 h-4 text-cyan-400" />
                 <span>Recent 3D Hardware Orders</span>
               </h4>
@@ -83,15 +83,15 @@ export default function UserProfileDrawer() {
                 </p>
               ) : (
                 user.orders.map(order => (
-                  <div key={order.id} className="p-4 rounded-2xl glass-panel border border-white/10 space-y-2">
+                  <div key={order.id} className="p-4 rounded-2xl glass-panel border border-slate-900/10 space-y-2">
                     <div className="flex items-center justify-between text-xs font-mono">
-                      <span className="font-bold text-white">{order.id}</span>
-                      <span className="text-slate-400">{order.date}</span>
+                      <span className="font-bold text-slate-900">{order.id}</span>
+                      <span className="text-slate-500">{order.date}</span>
                     </div>
-                    <div className="text-xs font-medium text-slate-200">
+                    <div className="text-xs font-medium text-slate-700">
                       {order.productName}
                     </div>
-                    <div className="flex items-center justify-between text-xs font-mono pt-1 border-t border-white/5">
+                    <div className="flex items-center justify-between text-xs font-mono pt-1 border-t border-slate-900/6">
                       <span className="text-emerald-400 font-semibold">{order.status}</span>
                       <span className="font-bold text-cyan-300">${order.total}</span>
                     </div>
@@ -101,24 +101,24 @@ export default function UserProfileDrawer() {
             </div>
 
             {/* Saved Shipping Address */}
-            <div className="p-4 rounded-2xl glass-panel border border-white/10 space-y-2">
-              <div className="flex items-center gap-2 text-xs font-mono text-slate-400 font-semibold">
+            <div className="p-4 rounded-2xl glass-panel border border-slate-900/10 space-y-2">
+              <div className="flex items-center gap-2 text-xs font-mono text-slate-500 font-semibold">
                 <MapPin className="w-4 h-4 text-purple-400" />
                 <span>Express Shipping Address</span>
               </div>
-              <p className="text-xs text-slate-300">
+              <p className="text-xs text-slate-600">
                 742 Evergreen Cyber Terrace, Suite 400<br />
                 Neo San Francisco, CA 94105
               </p>
             </div>
 
             {/* Hardware Warranty Protection Status */}
-            <div className="p-4 rounded-2xl glass-panel border border-white/10 flex items-center justify-between">
+            <div className="p-4 rounded-2xl glass-panel border border-slate-900/10 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <ShieldCheck className="w-5 h-5 text-emerald-400" />
                 <div>
-                  <span className="text-xs font-bold text-white block">AURA Care+ Active</span>
-                  <span className="text-[10px] font-mono text-slate-400">3-Year Unlimited Damage Coverage</span>
+                  <span className="text-xs font-bold text-slate-900 block">AURA Care+ Active</span>
+                  <span className="text-[10px] font-mono text-slate-500">3-Year Unlimited Damage Coverage</span>
                 </div>
               </div>
               <span className="text-emerald-400 text-xs font-mono font-bold">Active</span>
@@ -127,7 +127,7 @@ export default function UserProfileDrawer() {
           </div>
 
           {/* Logout Action */}
-          <div className="pt-4 border-t border-white/10 shrink-0">
+          <div className="pt-4 border-t border-slate-900/10 shrink-0">
             <button
               onClick={logout}
               className="w-full py-3 rounded-2xl glass-panel border border-rose-500/30 text-rose-300 hover:bg-rose-500/20 text-xs font-mono font-bold flex items-center justify-center gap-2 transition-all"

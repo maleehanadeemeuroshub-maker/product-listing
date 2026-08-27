@@ -213,7 +213,7 @@ export default function Hero3DStage({ product, activeColor, className = '' }) {
             Interactive 3D Stage
           </span>
         </div>
-        <p className="text-xs text-slate-300 font-medium">
+        <p className="text-xs text-slate-600 font-medium">
           Move cursor to tilt • Click product to inspect 3D studio
         </p>
       </div>

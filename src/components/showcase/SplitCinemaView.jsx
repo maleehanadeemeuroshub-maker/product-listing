@@ -40,7 +40,7 @@ export default function SplitCinemaView({ products }) {
             className={`px-4 py-2.5 rounded-2xl text-xs font-mono shrink-0 transition-all flex items-center gap-2 ${
               idx === selectedIdx
                 ? 'bg-cyan-500 text-black font-bold shadow-lg shadow-cyan-500/25 scale-105'
-                : 'glass-panel text-slate-400 hover:text-white hover:border-white/20'
+                : 'glass-panel text-slate-500 hover:text-slate-900 hover:border-slate-900/15'
             }`}
           >
             <span
@@ -53,7 +53,7 @@ export default function SplitCinemaView({ products }) {
       </div>
 
       {/* Main Split Cinema Stage */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch p-6 rounded-3xl glass-panel border border-white/10 shadow-2xl">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch p-6 rounded-3xl glass-panel border border-slate-900/10 shadow-2xl">
         
         {/* Left Column: Full 3D Interactive Viewer Canvas */}
         <div className="lg:col-span-7 h-[460px] sm:h-[520px] rounded-2xl overflow-hidden relative">
@@ -75,25 +75,25 @@ export default function SplitCinemaView({ products }) {
               </span>
               <div className="flex items-center gap-1.5 text-xs font-mono text-amber-400">
                 <Star className="w-4 h-4 fill-amber-400" />
-                <span className="font-bold text-white">{product.rating}</span>
-                <span className="text-slate-400">({product.reviewCount} reviews)</span>
+                <span className="font-bold text-slate-900">{product.rating}</span>
+                <span className="text-slate-500">({product.reviewCount} reviews)</span>
               </div>
             </div>
 
             {/* Title & Tagline */}
             <div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-white font-['Space_Grotesk']">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-['Space_Grotesk']">
                 {product.name}
               </h2>
-              <p className="text-sm text-slate-400 mt-1 font-light leading-relaxed">
+              <p className="text-sm text-slate-500 mt-1 font-light leading-relaxed">
                 {product.tagline}
               </p>
             </div>
 
             {/* Color Switcher */}
-            <div className="p-3.5 rounded-2xl bg-slate-900/60 border border-white/10 space-y-2">
+            <div className="p-3.5 rounded-2xl bg-slate-50/90 border border-slate-900/10 space-y-2">
               <div className="flex items-center justify-between text-xs font-mono">
-                <span className="text-slate-400">Colorway</span>
+                <span className="text-slate-500">Colorway</span>
                 <span className="text-cyan-300 font-semibold">{activeColor?.name}</span>
               </div>
               <div className="flex items-center gap-2">
@@ -117,15 +117,15 @@ export default function SplitCinemaView({ products }) {
             </div>
 
             {/* Technical Specifications Table */}
-            <div className="p-3.5 rounded-2xl bg-slate-900/60 border border-white/10 space-y-2">
-              <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block font-semibold">
+            <div className="p-3.5 rounded-2xl bg-slate-50/90 border border-slate-900/10 space-y-2">
+              <span className="text-xs font-mono text-slate-500 uppercase tracking-wider block font-semibold">
                 Technical Highlights
               </span>
               <div className="space-y-1.5 text-xs font-mono">
                 {Object.entries(product.specs).slice(0, 4).map(([key, val]) => (
-                  <div key={key} className="flex justify-between border-b border-white/5 pb-1">
-                    <span className="text-slate-400">{key}:</span>
-                    <span className="text-slate-200 font-semibold text-right">{val}</span>
+                  <div key={key} className="flex justify-between border-b border-slate-900/6 pb-1">
+                    <span className="text-slate-500">{key}:</span>
+                    <span className="text-slate-700 font-semibold text-right">{val}</span>
                   </div>
                 ))}
               </div>
@@ -133,10 +133,10 @@ export default function SplitCinemaView({ products }) {
           </div>
 
           {/* Bottom Price & Add Actions */}
-          <div className="space-y-3 pt-4 border-t border-white/10">
+          <div className="space-y-3 pt-4 border-t border-slate-900/10">
             <div className="flex items-baseline justify-between">
               <div>
-                <span className="text-3xl font-extrabold font-mono text-white">
+                <span className="text-3xl font-extrabold font-mono text-slate-900">
                   ${product.price}
                 </span>
                 {product.originalPrice && (
@@ -161,7 +161,7 @@ export default function SplitCinemaView({ products }) {
 
               <button
                 onClick={() => openProductDetail(product, activeColor)}
-                className="p-3.5 rounded-2xl glass-panel border border-white/20 text-cyan-400 hover:bg-cyan-500/10 transition-all"
+                className="p-3.5 rounded-2xl glass-panel border border-slate-900/15 text-cyan-400 hover:bg-cyan-500/10 transition-all"
                 title="Full 3D Studio"
               >
                 <Eye className="w-5 h-5" />
@@ -169,7 +169,7 @@ export default function SplitCinemaView({ products }) {
 
               <button
                 onClick={() => openARSimulator(product)}
-                className="p-3.5 rounded-2xl glass-panel border border-white/20 text-purple-400 hover:bg-purple-500/10 transition-all"
+                className="p-3.5 rounded-2xl glass-panel border border-slate-900/15 text-purple-400 hover:bg-purple-500/10 transition-all"
                 title="AR Simulator"
               >
                 <Box className="w-5 h-5" />
