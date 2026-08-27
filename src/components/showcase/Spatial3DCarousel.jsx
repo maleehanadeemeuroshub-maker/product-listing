@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from '../../context/StoreContext';
-import Card3DCanvas from '../3d/Card3DCanvas';
+import Card3DCanvas from '../3d/Card3DCanvasLazy';
 import {
   ChevronLeft,
   ChevronRight,

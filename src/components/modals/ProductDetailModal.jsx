@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useStore } from '../../context/StoreContext';
-import Product3DViewer from '../3d/Product3DViewer';
-import Card3DCanvas from '../3d/Card3DCanvas';
+import Product3DViewer from '../3d/Product3DViewerLazy';
+import Card3DCanvas from '../3d/Card3DCanvasLazy';
 import {
   X,
   ShoppingBag,

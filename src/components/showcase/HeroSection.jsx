@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useStore } from '../../context/StoreContext';
-import Hero3DStage from '../3d/Hero3DStage';
+import Hero3DStage from '../3d/Hero3DStageLazy';
 import {
   Sparkles,
   ShoppingBag,

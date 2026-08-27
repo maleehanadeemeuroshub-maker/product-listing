@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useStore } from '../../context/StoreContext';
-import Product3DViewer from '../3d/Product3DViewer';
+import Product3DViewer from '../3d/Product3DViewerLazy';
 import {
   ShoppingBag,
   Star,
