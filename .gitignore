@@ -12,3 +12,6 @@ data/db.json
 .vercel
 
 npm-debug.log*
+
+.vercel
+.env*
