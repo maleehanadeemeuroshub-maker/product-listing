@@ -51,7 +51,7 @@ export default function ProductGrid() {
         </div>
 
         {/* View Switcher & Sorting */}
-        <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto justify-between sm:justify-end">
           
           {/* View Mode Toggle Buttons */}
           <div className="flex items-center gap-1 p-1 rounded-xl bg-white/80 border border-slate-900/10">
@@ -93,12 +93,12 @@ export default function ProductGrid() {
           </div>
 
           {/* Sort Dropdown */}
-          <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/80 border border-slate-900/10 text-xs font-mono">
-            <ArrowUpDown className="w-3.5 h-3.5 text-slate-500" />
+          <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/80 border border-slate-900/10 text-xs font-mono min-w-0">
+            <ArrowUpDown className="w-3.5 h-3.5 text-slate-500 shrink-0" />
             <select
               value={filters.sortBy}
               onChange={handleSortChange}
-              className="bg-transparent text-slate-700 focus:outline-none cursor-pointer"
+              className="bg-transparent text-slate-700 focus:outline-none cursor-pointer min-w-0 max-w-[38vw] sm:max-w-none"
             >
               <option value="popularity" className="bg-white">Most Popular</option>
               <option value="price-asc" className="bg-white">Price: Low to High</option>

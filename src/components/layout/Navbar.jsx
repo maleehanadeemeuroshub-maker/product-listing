@@ -48,10 +48,10 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 w-full glass-panel border-b border-slate-900/10 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-        
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-2 sm:gap-4">
+
         {/* Brand Logo */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-6 min-w-0">
           <a
             href="#"
             onClick={(e) => {
@@ -59,18 +59,18 @@ export default function Navbar() {
               sound.playClick();
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="group flex items-center gap-2.5"
+            className="group flex items-center gap-2 sm:gap-2.5 min-w-0"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-purple-500 p-[1.5px] shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition-all duration-300">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-purple-500 p-[1.5px] shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition-all duration-300 shrink-0">
               <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-cyan-400 group-hover:rotate-12 transition-transform duration-300" />
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 group-hover:rotate-12 transition-transform duration-300" />
               </div>
             </div>
-            <div>
-              <span className="text-xl font-bold tracking-tight font-['Space_Grotesk'] text-slate-900 flex items-center gap-1">
+            <div className="min-w-0">
+              <span className="text-base sm:text-xl font-bold tracking-tight font-['Space_Grotesk'] text-slate-900 flex items-center gap-1 whitespace-nowrap">
                 AURA<span className="text-cyan-400">3D</span>
               </span>
-              <span className="block text-[10px] font-mono tracking-widest text-slate-500 uppercase -mt-1">
+              <span className="hidden sm:block text-[10px] font-mono tracking-widest text-slate-500 uppercase -mt-1">
                 Spatial Showcase
               </span>
             </div>
@@ -146,8 +146,8 @@ export default function Navbar() {
         </div>
 
         {/* Right Navigation Actions */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          
+        <div className="flex items-center gap-1 sm:gap-3 shrink-0">
+
           {/* Theme Toggle */}
           <button
             onClick={() => {
@@ -155,7 +155,7 @@ export default function Navbar() {
               sound.playClick();
             }}
             title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            className="p-2.5 rounded-xl transition-all border bg-slate-50/80 border-slate-900/10 text-slate-500 hover:text-slate-600"
+            className="p-1.5 sm:p-2.5 rounded-xl transition-all border bg-slate-50/80 border-slate-900/10 text-slate-500 hover:text-slate-600"
           >
             {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
@@ -167,7 +167,7 @@ export default function Navbar() {
               sound.playClick();
             }}
             title={soundEnabled ? 'Mute UI Sounds' : 'Unmute UI Sounds'}
-            className={`p-2.5 rounded-xl transition-all border ${
+            className={`hidden sm:inline-flex p-1.5 sm:p-2.5 rounded-xl transition-all border ${
               soundEnabled
                 ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20'
                 : 'bg-slate-50/80 border-slate-900/10 text-slate-500 hover:text-slate-600'
@@ -183,7 +183,7 @@ export default function Navbar() {
                 sound.playClick();
                 setIsCompareOpen(true);
               }}
-              className="relative p-2.5 rounded-xl bg-slate-50/80 border border-slate-900/10 text-slate-600 hover:text-slate-900 hover:border-cyan-500/40 transition-all flex items-center gap-1.5"
+              className="relative p-1.5 sm:p-2.5 rounded-xl bg-slate-50/80 border border-slate-900/10 text-slate-600 hover:text-slate-900 hover:border-cyan-500/40 transition-all flex items-center gap-1.5"
             >
               <Scale className="w-4 h-4 text-cyan-400" />
               <span className="hidden sm:inline text-xs font-mono font-medium">Compare</span>
@@ -200,7 +200,7 @@ export default function Navbar() {
               setIsWishlistOpen(true);
             }}
             title="Open Wishlist"
-            className="relative p-2.5 rounded-xl bg-slate-50/80 border border-slate-900/10 text-slate-600 hover:text-rose-400 hover:border-rose-500/30 transition-all"
+            className="relative p-1.5 sm:p-2.5 rounded-xl bg-slate-50/80 border border-slate-900/10 text-slate-600 hover:text-rose-400 hover:border-rose-500/30 transition-all"
           >
             <Heart className={`w-4 h-4 ${wishlist.length > 0 ? 'text-rose-400 fill-rose-400/20' : ''}`} />
             {wishlist.length > 0 && (
@@ -217,7 +217,7 @@ export default function Navbar() {
                 sound.playClick();
                 setIsProfileDrawerOpen(true);
               }}
-              className="flex items-center gap-2 p-1.5 pr-3 rounded-2xl glass-panel border border-cyan-500/40 hover:bg-white/5 transition-all"
+              className="flex items-center gap-2 p-1 sm:p-1.5 sm:pr-3 rounded-2xl glass-panel border border-cyan-500/40 hover:bg-white/5 transition-all"
             >
               <img
                 src={user.avatar}
@@ -235,7 +235,7 @@ export default function Navbar() {
                 setAuthMode('login');
                 setIsAuthModalOpen(true);
               }}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl glass-panel border border-slate-900/12 text-slate-700 hover:text-slate-900 hover:border-cyan-500/40 text-xs font-mono font-bold transition-all"
+              className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl glass-panel border border-slate-900/12 text-slate-700 hover:text-slate-900 hover:border-cyan-500/40 text-xs font-mono font-bold transition-all"
             >
               <User className="w-3.5 h-3.5 text-cyan-400" />
               <span className="hidden sm:inline">Sign In</span>
@@ -248,7 +248,7 @@ export default function Navbar() {
               sound.playClick();
               setIsCartOpen(true);
             }}
-            className="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-semibold text-sm shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
+            className="flex items-center gap-1.5 sm:gap-2.5 px-2 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-semibold text-sm shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
           >
             <ShoppingBag className="w-4 h-4" />
             <span className="hidden sm:inline font-mono">Cart</span>

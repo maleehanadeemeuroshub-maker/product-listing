@@ -96,18 +96,18 @@ export default function CartDrawer() {
 
           {/* Free Shipping Progress Bar */}
           <div className="p-3 my-3 rounded-2xl glass-panel border border-slate-900/10 shrink-0 space-y-1.5">
-            <div className="flex justify-between text-xs font-mono">
-              <span className="text-slate-600">
+            <div className="flex justify-between items-start gap-2 text-xs font-mono">
+              <span className="text-slate-600 min-w-0">
                 {cartSubtotal >= freeShippingThreshold ? (
                   <span className="text-emerald-400 font-bold flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
                     Unlocked Free Courier Freight!
                   </span>
                 ) : (
                   `Add $${(freeShippingThreshold - cartSubtotal).toFixed(2)} more for Free Shipping`
                 )}
               </span>
-              <span className="text-cyan-400 font-bold">{Math.round(freeShippingProgress)}%</span>
+              <span className="text-cyan-400 font-bold shrink-0">{Math.round(freeShippingProgress)}%</span>
             </div>
             <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
               <div

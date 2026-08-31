@@ -196,7 +196,7 @@ export default function ProductCard({ product }) {
 
         {/* Available Sizes / Variants Pills */}
         {product.sizes && (
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none min-w-0">
             {product.sizes.map((s, idx) => (
               <button
                 key={s}
