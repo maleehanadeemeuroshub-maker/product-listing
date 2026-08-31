@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useStore } from '../../context/StoreContext';
+import { useTheme } from '../../context/ThemeContext';
 import {
   Search,
   ShoppingBag,
@@ -7,6 +8,8 @@ import {
   Scale,
   Volume2,
   VolumeX,
+  Sun,
+  Moon,
   Sparkles,
   User,
   X,
@@ -15,6 +18,7 @@ import {
 import { sound } from '../../utils/audio';
 
 export default function Navbar() {
+  const { theme, toggleTheme } = useTheme();
   const {
     user,
     cartItemsCount,
@@ -144,6 +148,18 @@ export default function Navbar() {
         {/* Right Navigation Actions */}
         <div className="flex items-center gap-2 sm:gap-3">
           
+          {/* Theme Toggle */}
+          <button
+            onClick={() => {
+              toggleTheme();
+              sound.playClick();
+            }}
+            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            className="p-2.5 rounded-xl transition-all border bg-slate-50/80 border-slate-900/10 text-slate-500 hover:text-slate-600"
+          >
+            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
+
           {/* Sound Toggle */}
           <button
             onClick={() => {
