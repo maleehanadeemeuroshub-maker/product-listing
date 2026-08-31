@@ -95,12 +95,10 @@ export default function UserProfileDrawer() {
               </div>
             </div>
 
-            {/* Order confirmation note — Shopify's hosted checkout now owns real
-                order records; we no longer fabricate an order history here. */}
             <div className="p-4 rounded-2xl glass-panel border border-slate-900/10 flex items-start gap-3">
               <MailIcon className="w-4 h-4 text-cyan-400 mt-0.5 shrink-0" />
               <p className="text-xs text-slate-600">
-                Order confirmations and tracking are sent to your email after checkout.
+                Your orders will appear here once checkout is complete.
               </p>
             </div>
 

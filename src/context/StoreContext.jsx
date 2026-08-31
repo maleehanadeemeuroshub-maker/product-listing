@@ -1,20 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { PRODUCTS, CATEGORIES, BRANDS } from '../types/products';
+import { PRODUCTS, PROMO_CODES, CATEGORIES, BRANDS } from '../types/products';
 import { sound } from '../utils/audio';
 import confetti from 'canvas-confetti';
-import {
-  getProductsByHandles,
-  shopifyGetCart,
-  shopifyCreateCart,
-  shopifyAddLine,
-  shopifyUpdateLine,
-  shopifyRemoveLines,
-} from '../services/shopify';
 import { supabase } from '../services/supabaseClient';
 
 const StoreContext = createContext(null);
-
-const CART_ID_KEY = 'aura_shopify_cart_id';
 
 // Maps a Supabase auth user onto the display shape the UI expects.
 function mapSupabaseUser(supabaseUser) {
@@ -30,73 +20,9 @@ function mapSupabaseUser(supabaseUser) {
   };
 }
 
-// Merges Shopify's live commerce fields (price, stock, variant ids) onto our
-// local 3D/presentational product data (colors, materials, exploded layers).
-// A product with no matching Shopify data (not imported yet) is returned
-// unchanged and simply can't be added to a real cart until it is.
-function mergeShopifyProduct(product, shopifyProduct) {
-  if (!shopifyProduct) return product;
-
-  const shopifyVariantsBySize = {};
-  for (const variant of shopifyProduct.variants.nodes) {
-    const sizeOption = variant.selectedOptions.find((o) => o.name === 'Edition');
-    const key = sizeOption ? sizeOption.value : variant.title;
-    shopifyVariantsBySize[key] = {
-      variantId: variant.id,
-      price: parseFloat(variant.price.amount),
-      compareAtPrice: variant.compareAtPrice ? parseFloat(variant.compareAtPrice.amount) : null,
-      availableForSale: variant.availableForSale,
-    };
-  }
-
-  const firstVariant = shopifyProduct.variants.nodes[0];
-
-  return {
-    ...product,
-    price: parseFloat(shopifyProduct.priceRange.minVariantPrice.amount),
-    originalPrice: shopifyProduct.compareAtPriceRange?.minVariantPrice
-      ? parseFloat(shopifyProduct.compareAtPriceRange.minVariantPrice.amount)
-      : product.originalPrice,
-    inStock: shopifyProduct.availableForSale,
-    shopifyProductId: shopifyProduct.id,
-    shopifyVariantsBySize,
-    defaultVariantId: firstVariant?.id || null,
-  };
-}
-
-// Rebuilds the UI-shaped cart line list (with our local product/color/material
-// data for the 3D thumbnails) from Shopify's cart response, which only knows
-// about products/variants/line-attributes.
-function deriveCartLines(shopifyCart, products) {
-  if (!shopifyCart) return [];
-  return shopifyCart.lines.nodes.map((line) => {
-    const product = products.find((p) => p.id === line.merchandise.product.handle) || null;
-    const attrs = Object.fromEntries((line.attributes || []).map((a) => [a.key, a.value]));
-    const color =
-      (product?.colors || []).find((c) => c.name === attrs.Color) || product?.colors?.[0] || null;
-    const material =
-      (product?.materials || []).find((m) => m.name === attrs.Material) || null;
-
-    return {
-      cartItemId: line.id,
-      product: product || {
-        id: line.merchandise.product.handle,
-        name: line.merchandise.product.title,
-        price: parseFloat(line.merchandise.price.amount),
-      },
-      color: color || { id: 'default', name: 'Default', hex: '#94a3b8' },
-      material,
-      size: line.merchandise.title,
-      quantity: line.quantity,
-      lineTotal: parseFloat(line.cost.totalAmount.amount),
-    };
-  });
-}
-
 export function StoreProvider({ children }) {
-  // Products Dataset — starts as local mock data, gets live Shopify
-  // price/stock/variant data merged in once it loads (see effect below).
-  const [products, setProducts] = useState(PRODUCTS);
+  // Products Dataset
+  const [products] = useState(PRODUCTS);
 
   // User Authentication State — backed by real Supabase Auth (see effect below).
   const [user, setUser] = useState(null);
@@ -108,10 +34,18 @@ export function StoreProvider({ children }) {
   const [isProfileDrawerOpen, setIsProfileDrawerOpen] = useState(false);
   const [isResetPasswordOpen, setIsResetPasswordOpen] = useState(false);
 
-  // Cart is backed by a real Shopify cart (see services/shopify.js). We keep
-  // the raw Shopify cart plus a UI-shaped derived line list.
-  const [shopifyCart, setShopifyCart] = useState(null);
-  const [cartLoading, setCartLoading] = useState(false);
+  // Cart State with LocalStorage persistence
+  const [cart, setCart] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aura_cart');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Active Promo Code
+  const [appliedPromo, setAppliedPromo] = useState(null);
 
   // Wishlist & Compare — persisted per-user in Supabase (see effects below).
   // Both store raw product ids; compareList is hydrated to full product
@@ -153,30 +87,14 @@ export function StoreProvider({ children }) {
   // Toasts
   const [toasts, setToasts] = useState([]);
 
-  // Load live Shopify data (price/stock/variants) for every local product,
-  // once, on mount. Products without a matching Shopify handle are left as-is.
+  // Sync cart to local storage
   useEffect(() => {
-    let cancelled = false;
-    getProductsByHandles(PRODUCTS.map((p) => p.id)).then((byHandle) => {
-      if (cancelled) return;
-      setProducts(PRODUCTS.map((p) => mergeShopifyProduct(p, byHandle[p.id])));
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  // Resume an existing Shopify cart from localStorage, if any.
-  useEffect(() => {
-    const savedCartId = localStorage.getItem(CART_ID_KEY);
-    if (!savedCartId) return;
-    shopifyGetCart(savedCartId)
-      .then((c) => {
-        if (c) setShopifyCart(c);
-        else localStorage.removeItem(CART_ID_KEY);
-      })
-      .catch((err) => console.error('Failed to resume cart', err));
-  }, []);
+    try {
+      localStorage.setItem('aura_cart', JSON.stringify(cart));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [cart]);
 
   // Track the real Supabase auth session, and react to a password-recovery
   // link being opened (Supabase fires this event when the URL carries a
@@ -313,99 +231,88 @@ export function StoreProvider({ children }) {
     addToast('Avatar updated', 'success');
   };
 
-  // Cart operations — all backed by a real Shopify cart.
-  const addToCart = async (product, color = null, material = null, size = null, quantity = 1) => {
+  // Cart operations
+  const addToCart = (product, color = null, material = null, size = null, quantity = 1) => {
+    sound.playCartSuccess();
     const chosenColor = color || product.colors[0];
     const chosenMat = material || (product.materials ? product.materials[0] : null);
     const chosenSize = size || (product.sizes ? product.sizes[0] : null);
-    const variant = product.shopifyVariantsBySize?.[chosenSize];
+    const cartItemId = `${product.id}-${chosenColor.id}-${chosenMat ? chosenMat.id : 'default'}-${chosenSize || 'std'}`;
 
-    if (!variant) {
-      addToast(`${product.name} isn't available for purchase yet (catalog sync pending)`, 'warning');
-      return;
-    }
-
-    sound.playCartSuccess();
-    setCartLoading(true);
-    try {
-      const lines = [
+    setCart(prev => {
+      const existing = prev.find(item => item.cartItemId === cartItemId);
+      if (existing) {
+        return prev.map(item =>
+          item.cartItemId === cartItemId
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+      }
+      return [
+        ...prev,
         {
-          merchandiseId: variant.variantId,
+          cartItemId,
+          product,
+          color: chosenColor,
+          material: chosenMat,
+          size: chosenSize,
           quantity,
-          attributes: [
-            { key: 'Color', value: chosenColor.name },
-            ...(chosenMat ? [{ key: 'Material', value: chosenMat.name }] : []),
-          ],
+          addedAt: Date.now(),
         },
       ];
+    });
 
-      let updatedCart;
-      if (shopifyCart) {
-        updatedCart = await shopifyAddLine(shopifyCart.id, lines);
-      } else {
-        updatedCart = await shopifyCreateCart(lines);
-        localStorage.setItem(CART_ID_KEY, updatedCart.id);
-      }
-      setShopifyCart(updatedCart);
-      addToast(`Added ${product.name} to Cart`, 'success');
-    } catch (err) {
-      console.error(err);
-      addToast('Could not add item to cart. Please try again.', 'warning');
-    } finally {
-      setCartLoading(false);
-    }
+    addToast(`Added ${product.name} to Cart`, 'success');
   };
 
   // Buy Now: adds to cart and opens cart drawer immediately
-  const buyNow = async (product, color = null, material = null, size = null, quantity = 1) => {
-    await addToCart(product, color, material, size, quantity);
+  const buyNow = (product, color = null, material = null, size = null, quantity = 1) => {
+    addToCart(product, color, material, size, quantity);
     setIsCartOpen(true);
     if (selectedProduct) {
       setSelectedProduct(null);
     }
   };
 
-  const removeFromCart = async (cartItemId) => {
-    if (!shopifyCart) return;
+  const removeFromCart = (cartItemId) => {
     sound.playClick();
-    setCartLoading(true);
-    try {
-      const updatedCart = await shopifyRemoveLines(shopifyCart.id, [cartItemId]);
-      setShopifyCart(updatedCart);
-      addToast('Removed item from Cart', 'info');
-    } catch (err) {
-      console.error(err);
-      addToast('Could not remove item. Please try again.', 'warning');
-    } finally {
-      setCartLoading(false);
-    }
+    setCart(prev => prev.filter(item => item.cartItemId !== cartItemId));
+    addToast('Removed item from Cart', 'info');
   };
 
-  const updateCartQuantity = async (cartItemId, newQty) => {
-    if (!shopifyCart) return;
+  const updateCartQuantity = (cartItemId, newQty) => {
     sound.playClick();
     if (newQty <= 0) {
-      await removeFromCart(cartItemId);
+      removeFromCart(cartItemId);
       return;
     }
-    setCartLoading(true);
-    try {
-      const updatedCart = await shopifyUpdateLine(shopifyCart.id, [{ id: cartItemId, quantity: newQty }]);
-      setShopifyCart(updatedCart);
-    } catch (err) {
-      console.error(err);
-      addToast('Could not update quantity. Please try again.', 'warning');
-    } finally {
-      setCartLoading(false);
-    }
+    setCart(prev =>
+      prev.map(item =>
+        item.cartItemId === cartItemId ? { ...item, quantity: newQty } : item
+      )
+    );
   };
 
   const clearCart = () => {
-    setShopifyCart(null);
-    localStorage.removeItem(CART_ID_KEY);
+    setCart([]);
+    setAppliedPromo(null);
   };
 
-  const cart = deriveCartLines(shopifyCart, products);
+  // Apply Promo code
+  const applyPromoCode = (code) => {
+    sound.playClick();
+    const cleanCode = code.trim().toUpperCase();
+    if (PROMO_CODES[cleanCode]) {
+      setAppliedPromo({ code: cleanCode, ...PROMO_CODES[cleanCode] });
+      confetti({ particleCount: 60, spread: 60, origin: { y: 0.8 } });
+      addToast(`Promo code ${cleanCode} applied successfully!`, 'success');
+      return true;
+    } else {
+      addToast('Invalid promo code. Try AURA20 or CYBER3D', 'warning');
+      return false;
+    }
+  };
+
   const compareList = products.filter((p) => compareIds.includes(p.id));
 
   // Wishlist toggle — persisted to Supabase, requires sign-in.
@@ -487,12 +394,18 @@ export function StoreProvider({ children }) {
     setIsAROpen(true);
   };
 
-  // Computed Cart Totals — read straight from Shopify's cart (it owns tax/
-  // discount/shipping math for real). Discount codes are entered on Shopify's
-  // own checkout page now, not here.
-  const cartSubtotal = shopifyCart ? parseFloat(shopifyCart.cost.subtotalAmount.amount) : 0;
-  const cartTotal = shopifyCart ? parseFloat(shopifyCart.cost.totalAmount.amount) : 0;
-  const cartItemsCount = shopifyCart ? shopifyCart.totalQuantity : 0;
+  // Computed Cart Totals
+  const cartSubtotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  let discountAmount = 0;
+  if (appliedPromo) {
+    if (appliedPromo.discountPercent) {
+      discountAmount = (cartSubtotal * appliedPromo.discountPercent) / 100;
+    } else if (appliedPromo.discountAmount) {
+      discountAmount = Math.min(cartSubtotal, appliedPromo.discountAmount);
+    }
+  }
+  const cartTotal = Math.max(0, cartSubtotal - discountAmount);
+  const cartItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   // Filtered & Sorted Products
   const filteredProducts = products.filter(p => {
@@ -539,11 +452,11 @@ export function StoreProvider({ children }) {
         isResetPasswordOpen,
         setIsResetPasswordOpen,
         cart,
-        cartLoading,
         cartItemsCount,
         cartSubtotal,
+        discountAmount,
         cartTotal,
-        checkoutUrl: shopifyCart?.checkoutUrl || null,
+        appliedPromo,
         wishlist,
         compareList,
         isCartOpen,
@@ -583,6 +496,7 @@ export function StoreProvider({ children }) {
         removeFromCart,
         updateCartQuantity,
         clearCart,
+        applyPromoCode,
         toggleWishlist,
         toggleCompare,
         openProductDetail,
