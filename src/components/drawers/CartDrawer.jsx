@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useStore } from '../../context/StoreContext';
 import {
   X,
@@ -7,13 +7,10 @@ import {
   Plus,
   Minus,
   ArrowRight,
-  Sparkles,
-  Tag,
   ShieldCheck,
   CheckCircle2,
 } from 'lucide-react';
 import { sound } from '../../utils/audio';
-import confetti from 'canvas-confetti';
 
 export default function CartDrawer() {
   const {
@@ -22,49 +19,23 @@ export default function CartDrawer() {
     cart,
     cartItemsCount,
     cartSubtotal,
-    discountAmount,
     cartTotal,
-    appliedPromo,
+    cartLoading,
+    checkoutUrl,
     updateCartQuantity,
     removeFromCart,
-    applyPromoCode,
-    clearCart,
   } = useStore();
-
-  const [promoInput, setPromoInput] = useState('');
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [checkoutSuccess, setCheckoutSuccess] = useState(false);
 
   if (!isCartOpen) return null;
 
   const freeShippingThreshold = 150;
   const freeShippingProgress = Math.min(100, (cartSubtotal / freeShippingThreshold) * 100);
 
-  const handleApplyPromo = (e) => {
-    e.preventDefault();
-    if (promoInput.trim()) {
-      applyPromoCode(promoInput);
-      setPromoInput('');
-    }
-  };
-
   const handleCheckout = () => {
+    if (!checkoutUrl) return;
     sound.playCartSuccess();
-    setIsCheckingOut(true);
-    setTimeout(() => {
-      setIsCheckingOut(false);
-      setCheckoutSuccess(true);
-      confetti({
-        particleCount: 120,
-        spread: 80,
-        origin: { y: 0.6 },
-      });
-      setTimeout(() => {
-        clearCart();
-        setCheckoutSuccess(false);
-        setIsCartOpen(false);
-      }, 3000);
-    }, 1500);
+    // Hands off to Shopify's real hosted checkout — real payment processing happens there.
+    window.location.href = checkoutUrl;
   };
 
   return (
@@ -121,19 +92,7 @@ export default function CartDrawer() {
 
           {/* Cart Item List */}
           <div className="flex-1 overflow-y-auto pr-1 space-y-3 py-2">
-            {checkoutSuccess ? (
-              <div className="py-16 text-center space-y-4">
-                <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto animate-bounce">
-                  <CheckCircle2 className="w-8 h-8" />
-                </div>
-                <h3 className="text-xl font-bold font-['Space_Grotesk'] text-slate-900">
-                  Order Successfully Placed!
-                </h3>
-                <p className="text-xs text-slate-500 max-w-xs mx-auto">
-                  Thank you for your order. Tracking telemetry and firmware activation keys have been dispatched to your email.
-                </p>
-              </div>
-            ) : cart.length === 0 ? (
+            {cart.length === 0 ? (
               <div className="py-20 text-center space-y-3">
                 <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mx-auto">
                   <ShoppingBag className="w-7 h-7" />
@@ -172,7 +131,7 @@ export default function CartDrawer() {
                       {item.material && <span>• {item.material.name}</span>}
                     </div>
                     <div className="text-xs font-mono font-extrabold text-cyan-300">
-                      ${item.product.price * item.quantity}
+                      ${item.lineTotal.toFixed(2)}
                     </div>
                   </div>
 
@@ -209,53 +168,14 @@ export default function CartDrawer() {
           </div>
 
           {/* Drawer Footer & Checkout Controls */}
-          {cart.length > 0 && !checkoutSuccess && (
+          {cart.length > 0 && (
             <div className="pt-4 border-t border-slate-900/10 space-y-4 shrink-0">
-              
-              {/* Promo Code Form */}
-              <form onSubmit={handleApplyPromo} className="flex gap-2">
-                <div className="relative flex-1">
-                  <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
-                  <input
-                    type="text"
-                    placeholder="Promo (AURA20 or CYBER3D)"
-                    value={promoInput}
-                    onChange={(e) => setPromoInput(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-white border border-slate-900/10 text-slate-800 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-mono text-cyan-300 font-semibold border border-slate-900/10"
-                >
-                  Apply
-                </button>
-              </form>
 
-              {appliedPromo && (
-                <div className="flex items-center justify-between text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-xl border border-emerald-500/30">
-                  <span>Applied: {appliedPromo.code}</span>
-                  <span>-${discountAmount.toFixed(2)}</span>
-                </div>
-              )}
-
-              {/* Price Breakdown */}
+              {/* Price Breakdown — real totals from Shopify, incl. whatever tax/shipping it computes */}
               <div className="space-y-1.5 text-xs font-mono">
                 <div className="flex justify-between text-slate-500">
                   <span>Subtotal</span>
                   <span className="text-slate-700">${cartSubtotal.toFixed(2)}</span>
-                </div>
-                {discountAmount > 0 && (
-                  <div className="flex justify-between text-emerald-400">
-                    <span>Discount</span>
-                    <span>-${discountAmount.toFixed(2)}</span>
-                  </div>
-                )}
-                <div className="flex justify-between text-slate-500">
-                  <span>Courier Delivery</span>
-                  <span className="text-emerald-400 font-semibold">
-                    {cartSubtotal >= freeShippingThreshold ? 'FREE' : '$15.00'}
-                  </span>
                 </div>
                 <div className="flex justify-between text-base font-bold text-slate-900 pt-2 border-t border-slate-900/10">
                   <span>Total</span>
@@ -263,18 +183,21 @@ export default function CartDrawer() {
                     ${cartTotal.toFixed(2)}
                   </span>
                 </div>
+                <p className="text-[10px] text-slate-500 pt-1">
+                  Shipping, tax, and discount codes are applied on the next step.
+                </p>
               </div>
 
-              {/* Checkout CTA */}
+              {/* Checkout CTA — hands off to Shopify's real hosted checkout */}
               <button
                 onClick={handleCheckout}
-                disabled={isCheckingOut}
+                disabled={cartLoading || !checkoutUrl}
                 className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold text-sm font-mono shadow-xl shadow-cyan-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50"
               >
-                {isCheckingOut ? (
+                {cartLoading ? (
                   <div className="flex items-center gap-2">
                     <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                    <span>Processing Encryption...</span>
+                    <span>Syncing Cart...</span>
                   </div>
                 ) : (
                   <>

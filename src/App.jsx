@@ -11,6 +11,7 @@ import UserProfileDrawer from './components/drawers/UserProfileDrawer';
 import ProductDetailModal from './components/modals/ProductDetailModal';
 import ARSimulatorModal from './components/modals/ARSimulatorModal';
 import AuthModal from './components/modals/AuthModal';
+import ResetPasswordModal from './components/modals/ResetPasswordModal';
 import ToastContainer from './components/common/ToastContainer';
 import { Sparkles, Layers, Box, Cpu } from 'lucide-react';
 
@@ -67,6 +68,7 @@ export default function App() {
       <ProductDetailModal />
       <ARSimulatorModal />
       <AuthModal />
+      <ResetPasswordModal />
       <ToastContainer />
 
       {/* Footer */}

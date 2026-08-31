@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useStore } from '../../context/StoreContext';
 import {
   X,
   User,
-  Package,
+  Mail as MailIcon,
   MapPin,
   ShieldCheck,
   LogOut,
   Sparkles,
-  ExternalLink,
+  Camera,
 } from 'lucide-react';
 import { sound } from '../../utils/audio';
 
@@ -18,9 +18,18 @@ export default function UserProfileDrawer() {
     isProfileDrawerOpen,
     setIsProfileDrawerOpen,
     logout,
+    updateAvatar,
   } = useStore();
 
+  const fileInputRef = useRef(null);
+
   if (!isProfileDrawerOpen || !user) return null;
+
+  const handleAvatarClick = () => fileInputRef.current?.click();
+  const handleAvatarChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) updateAvatar(file);
+  };
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden bg-white/70 backdrop-blur-md animate-in fade-in duration-200">
@@ -53,10 +62,26 @@ export default function UserProfileDrawer() {
             
             {/* Profile Avatar Card */}
             <div className="p-4 rounded-3xl glass-panel border border-cyan-500/30 flex items-center gap-4">
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="w-14 h-14 rounded-2xl object-cover border border-cyan-400/40 shadow-lg shadow-cyan-500/20"
+              <button
+                onClick={handleAvatarClick}
+                className="relative w-14 h-14 rounded-2xl shrink-0 group"
+                title="Change avatar"
+              >
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  className="w-14 h-14 rounded-2xl object-cover border border-cyan-400/40 shadow-lg shadow-cyan-500/20"
+                />
+                <span className="absolute inset-0 rounded-2xl bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <Camera className="w-5 h-5 text-white" />
+                </span>
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarChange}
+                className="hidden"
               />
               <div className="space-y-1">
                 <h3 className="text-base font-bold text-slate-900 font-['Space_Grotesk']">
@@ -70,34 +95,13 @@ export default function UserProfileDrawer() {
               </div>
             </div>
 
-            {/* Orders Section */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-mono uppercase tracking-widest text-slate-500 font-semibold flex items-center gap-2">
-                <Package className="w-4 h-4 text-cyan-400" />
-                <span>Recent 3D Hardware Orders</span>
-              </h4>
-
-              {user.orders.length === 0 ? (
-                <p className="text-xs font-mono text-slate-500 p-4 rounded-2xl glass-panel text-center">
-                  No orders placed yet. Add items to cart to start building your 3D setup!
-                </p>
-              ) : (
-                user.orders.map(order => (
-                  <div key={order.id} className="p-4 rounded-2xl glass-panel border border-slate-900/10 space-y-2">
-                    <div className="flex items-center justify-between text-xs font-mono">
-                      <span className="font-bold text-slate-900">{order.id}</span>
-                      <span className="text-slate-500">{order.date}</span>
-                    </div>
-                    <div className="text-xs font-medium text-slate-700">
-                      {order.productName}
-                    </div>
-                    <div className="flex items-center justify-between text-xs font-mono pt-1 border-t border-slate-900/6">
-                      <span className="text-emerald-400 font-semibold">{order.status}</span>
-                      <span className="font-bold text-cyan-300">${order.total}</span>
-                    </div>
-                  </div>
-                ))
-              )}
+            {/* Order confirmation note — Shopify's hosted checkout now owns real
+                order records; we no longer fabricate an order history here. */}
+            <div className="p-4 rounded-2xl glass-panel border border-slate-900/10 flex items-start gap-3">
+              <MailIcon className="w-4 h-4 text-cyan-400 mt-0.5 shrink-0" />
+              <p className="text-xs text-slate-600">
+                Order confirmations and tracking are sent to your email after checkout.
+              </p>
             </div>
 
             {/* Saved Shipping Address */}

@@ -9,8 +9,6 @@ import {
   Eye,
   EyeOff,
   ArrowRight,
-  ShieldCheck,
-  Zap,
 } from 'lucide-react';
 import { sound } from '../../utils/audio';
 
@@ -22,6 +20,7 @@ export default function AuthModal() {
     setAuthMode,
     login,
     signup,
+    requestPasswordReset,
     addToast,
   } = useStore();
 
@@ -29,32 +28,37 @@ export default function AuthModal() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   if (!isAuthModalOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (authMode === 'login') {
-      if (!email || !password) {
-        addToast('Please enter both email and password', 'warning');
-        return;
+    setSubmitting(true);
+    try {
+      if (authMode === 'login') {
+        if (!email || !password) {
+          addToast('Please enter both email and password', 'warning');
+          return;
+        }
+        await login(email, password);
+      } else if (authMode === 'signup') {
+        if (!name || !email || !password) {
+          addToast('Please complete all required fields', 'warning');
+          return;
+        }
+        await signup(name, email, password);
+      } else if (authMode === 'forgot') {
+        if (!email) {
+          addToast('Please enter your email', 'warning');
+          return;
+        }
+        const sent = await requestPasswordReset(email);
+        if (sent) setAuthMode('login');
       }
-      login(email, password);
-    } else if (authMode === 'signup') {
-      if (!name || !email || !password) {
-        addToast('Please complete all required fields', 'warning');
-        return;
-      }
-      signup(name, email, password);
-    } else if (authMode === 'forgot') {
-      sound.playClick();
-      addToast(`Password recovery link sent to ${email}`, 'success');
-      setAuthMode('login');
+    } finally {
+      setSubmitting(false);
     }
-  };
-
-  const handleDemoLogin = () => {
-    login('developer@aura3d.io', 'demo1234');
   };
 
   return (
@@ -200,30 +204,21 @@ export default function AuthModal() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold text-xs font-mono shadow-xl shadow-cyan-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+            disabled={submitting}
+            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold text-xs font-mono shadow-xl shadow-cyan-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50"
           >
             <span>
-              {authMode === 'login' && 'Sign In to Account'}
-              {authMode === 'signup' && 'Create Account'}
-              {authMode === 'forgot' && 'Send Reset Link'}
+              {submitting
+                ? 'Please wait...'
+                : authMode === 'login'
+                  ? 'Sign In to Account'
+                  : authMode === 'signup'
+                    ? 'Create Account'
+                    : 'Send Reset Link'}
             </span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
-
-        {/* Demo Fast Login Trigger */}
-        {authMode === 'login' && (
-          <div className="pt-2 border-t border-slate-900/10 space-y-2">
-            <button
-              onClick={handleDemoLogin}
-              type="button"
-              className="w-full py-2.5 rounded-xl glass-panel border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/15 text-xs font-mono transition-all flex items-center justify-center gap-2"
-            >
-              <Zap className="w-3.5 h-3.5 text-cyan-400" />
-              <span>1-Click Demo User Login</span>
-            </button>
-          </div>
-        )}
 
         {authMode === 'forgot' && (
           <button

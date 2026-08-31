@@ -1,51 +1,123 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { PRODUCTS, PROMO_CODES, CATEGORIES, BRANDS } from '../types/products';
+import { PRODUCTS, CATEGORIES, BRANDS } from '../types/products';
 import { sound } from '../utils/audio';
 import confetti from 'canvas-confetti';
+import {
+  getProductsByHandles,
+  shopifyGetCart,
+  shopifyCreateCart,
+  shopifyAddLine,
+  shopifyUpdateLine,
+  shopifyRemoveLines,
+} from '../services/shopify';
+import { supabase } from '../services/supabaseClient';
 
 const StoreContext = createContext(null);
 
-export function StoreProvider({ children }) {
-  // Products Dataset
-  const [products] = useState(PRODUCTS);
+const CART_ID_KEY = 'aura_shopify_cart_id';
 
-  // User Authentication State
-  const [user, setUser] = useState(() => {
-    try {
-      const saved = localStorage.getItem('aura_user');
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
+// Maps a Supabase auth user onto the display shape the UI expects.
+function mapSupabaseUser(supabaseUser) {
+  if (!supabaseUser) return null;
+  const meta = supabaseUser.user_metadata || {};
+  return {
+    id: supabaseUser.id,
+    name: meta.name || supabaseUser.email?.split('@')[0] || 'Aura Member',
+    email: supabaseUser.email,
+    avatar: meta.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+    role: 'Aura Member',
+    joinedDate: new Date(supabaseUser.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+  };
+}
+
+// Merges Shopify's live commerce fields (price, stock, variant ids) onto our
+// local 3D/presentational product data (colors, materials, exploded layers).
+// A product with no matching Shopify data (not imported yet) is returned
+// unchanged and simply can't be added to a real cart until it is.
+function mergeShopifyProduct(product, shopifyProduct) {
+  if (!shopifyProduct) return product;
+
+  const shopifyVariantsBySize = {};
+  for (const variant of shopifyProduct.variants.nodes) {
+    const sizeOption = variant.selectedOptions.find((o) => o.name === 'Edition');
+    const key = sizeOption ? sizeOption.value : variant.title;
+    shopifyVariantsBySize[key] = {
+      variantId: variant.id,
+      price: parseFloat(variant.price.amount),
+      compareAtPrice: variant.compareAtPrice ? parseFloat(variant.compareAtPrice.amount) : null,
+      availableForSale: variant.availableForSale,
+    };
+  }
+
+  const firstVariant = shopifyProduct.variants.nodes[0];
+
+  return {
+    ...product,
+    price: parseFloat(shopifyProduct.priceRange.minVariantPrice.amount),
+    originalPrice: shopifyProduct.compareAtPriceRange?.minVariantPrice
+      ? parseFloat(shopifyProduct.compareAtPriceRange.minVariantPrice.amount)
+      : product.originalPrice,
+    inStock: shopifyProduct.availableForSale,
+    shopifyProductId: shopifyProduct.id,
+    shopifyVariantsBySize,
+    defaultVariantId: firstVariant?.id || null,
+  };
+}
+
+// Rebuilds the UI-shaped cart line list (with our local product/color/material
+// data for the 3D thumbnails) from Shopify's cart response, which only knows
+// about products/variants/line-attributes.
+function deriveCartLines(shopifyCart, products) {
+  if (!shopifyCart) return [];
+  return shopifyCart.lines.nodes.map((line) => {
+    const product = products.find((p) => p.id === line.merchandise.product.handle) || null;
+    const attrs = Object.fromEntries((line.attributes || []).map((a) => [a.key, a.value]));
+    const color =
+      (product?.colors || []).find((c) => c.name === attrs.Color) || product?.colors?.[0] || null;
+    const material =
+      (product?.materials || []).find((m) => m.name === attrs.Material) || null;
+
+    return {
+      cartItemId: line.id,
+      product: product || {
+        id: line.merchandise.product.handle,
+        name: line.merchandise.product.title,
+        price: parseFloat(line.merchandise.price.amount),
+      },
+      color: color || { id: 'default', name: 'Default', hex: '#94a3b8' },
+      material,
+      size: line.merchandise.title,
+      quantity: line.quantity,
+      lineTotal: parseFloat(line.cost.totalAmount.amount),
+    };
   });
+}
+
+export function StoreProvider({ children }) {
+  // Products Dataset — starts as local mock data, gets live Shopify
+  // price/stock/variant data merged in once it loads (see effect below).
+  const [products, setProducts] = useState(PRODUCTS);
+
+  // User Authentication State — backed by real Supabase Auth (see effect below).
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   // Auth Modals State
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState('login'); // 'login' | 'signup' | 'forgot'
   const [isProfileDrawerOpen, setIsProfileDrawerOpen] = useState(false);
+  const [isResetPasswordOpen, setIsResetPasswordOpen] = useState(false);
 
-  // Cart State with LocalStorage persistence
-  const [cart, setCart] = useState(() => {
-    try {
-      const saved = localStorage.getItem('aura_cart');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+  // Cart is backed by a real Shopify cart (see services/shopify.js). We keep
+  // the raw Shopify cart plus a UI-shaped derived line list.
+  const [shopifyCart, setShopifyCart] = useState(null);
+  const [cartLoading, setCartLoading] = useState(false);
 
-  // Wishlist State
-  const [wishlist, setWishlist] = useState(() => {
-    try {
-      const saved = localStorage.getItem('aura_wishlist');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  // Compare List (max 4 products)
-  const [compareList, setCompareList] = useState([]);
+  // Wishlist & Compare — persisted per-user in Supabase (see effects below).
+  // Both store raw product ids; compareList is hydrated to full product
+  // objects below since existing consumers expect that shape.
+  const [wishlist, setWishlist] = useState([]);
+  const [compareIds, setCompareIds] = useState([]);
 
   // Drawers & Modals State
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -62,9 +134,6 @@ export function StoreProvider({ children }) {
 
   // Sound effects toggle
   const [soundEnabled, setSoundEnabled] = useState(true);
-
-  // Active Promo Code
-  const [appliedPromo, setAppliedPromo] = useState(null);
 
   // View Mode: 'grid' | 'spatial-carousel' | 'split-cinema'
   const [viewMode, setViewMode] = useState('grid');
@@ -84,33 +153,68 @@ export function StoreProvider({ children }) {
   // Toasts
   const [toasts, setToasts] = useState([]);
 
-  // Sync state to local storage
+  // Load live Shopify data (price/stock/variants) for every local product,
+  // once, on mount. Products without a matching Shopify handle are left as-is.
   useEffect(() => {
-    try {
-      localStorage.setItem('aura_cart', JSON.stringify(cart));
-    } catch (e) {
-      console.error(e);
-    }
-  }, [cart]);
+    let cancelled = false;
+    getProductsByHandles(PRODUCTS.map((p) => p.id)).then((byHandle) => {
+      if (cancelled) return;
+      setProducts(PRODUCTS.map((p) => mergeShopifyProduct(p, byHandle[p.id])));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
+  // Resume an existing Shopify cart from localStorage, if any.
   useEffect(() => {
-    try {
-      localStorage.setItem('aura_wishlist', JSON.stringify(wishlist));
-    } catch (e) {
-      console.error(e);
-    }
-  }, [wishlist]);
+    const savedCartId = localStorage.getItem(CART_ID_KEY);
+    if (!savedCartId) return;
+    shopifyGetCart(savedCartId)
+      .then((c) => {
+        if (c) setShopifyCart(c);
+        else localStorage.removeItem(CART_ID_KEY);
+      })
+      .catch((err) => console.error('Failed to resume cart', err));
+  }, []);
 
+  // Track the real Supabase auth session, and react to a password-recovery
+  // link being opened (Supabase fires this event when the URL carries a
+  // recovery token, regardless of path — no dedicated route needed).
   useEffect(() => {
-    try {
-      if (user) {
-        localStorage.setItem('aura_user', JSON.stringify(user));
-      } else {
-        localStorage.removeItem('aura_user');
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(mapSupabaseUser(session?.user));
+      setAuthLoading(false);
+    });
+
+    const { data: subscription } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(mapSupabaseUser(session?.user));
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsResetPasswordOpen(true);
       }
-    } catch (e) {
-      console.error(e);
+    });
+
+    return () => subscription.subscription.unsubscribe();
+  }, []);
+
+  // Load this user's saved wishlist/compare lists whenever auth state changes.
+  useEffect(() => {
+    if (!user) {
+      setWishlist([]);
+      setCompareIds([]);
+      return;
     }
+    supabase
+      .from('user_product_lists')
+      .select('product_id, list_type')
+      .then(({ data, error }) => {
+        if (error) {
+          console.error('Failed to load saved lists', error);
+          return;
+        }
+        setWishlist(data.filter((r) => r.list_type === 'wishlist').map((r) => r.product_id));
+        setCompareIds(data.filter((r) => r.list_type === 'compare').map((r) => r.product_id));
+      });
   }, [user]);
 
   useEffect(() => {
@@ -126,152 +230,240 @@ export function StoreProvider({ children }) {
     }, 3500);
   };
 
-  // Auth Functions
-  const login = (email, password) => {
+  // Auth Functions — all backed by real Supabase Auth.
+  const login = async (email, password) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      addToast(error.message, 'warning');
+      return;
+    }
     sound.playCartSuccess();
-    const newUser = {
-      name: email.split('@')[0] || 'Cyber Explorer',
-      email: email,
-      role: 'Hardware VIP Member',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-      joinedDate: 'August 2026',
-      orders: [
-        {
-          id: 'ORD-9842',
-          date: 'Aug 20, 2026',
-          productName: 'Aura Pro Spatial ANC Headphones',
-          total: 399,
-          status: 'Shipped (Tracking Live)',
-        },
-      ],
-    };
-    setUser(newUser);
     setIsAuthModalOpen(false);
     confetti({ particleCount: 50, spread: 50 });
-    addToast(`Welcome back, ${newUser.name}!`, 'success');
+    addToast(`Welcome back, ${mapSupabaseUser(data.user).name}!`, 'success');
   };
 
-  const signup = (name, email, password) => {
+  const signup = async (name, email, password) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { name } },
+    });
+    if (error) {
+      addToast(error.message, 'warning');
+      return;
+    }
     sound.playCartSuccess();
-    const newUser = {
-      name: name || 'Aura Member',
-      email: email,
-      role: 'Early Access Member',
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-      joinedDate: 'August 2026',
-      orders: [],
-    };
-    setUser(newUser);
     setIsAuthModalOpen(false);
     confetti({ particleCount: 70, spread: 70 });
-    addToast(`Account created! Welcome, ${newUser.name}.`, 'success');
+    if (!data.session) {
+      addToast('Check your email to confirm your account.', 'info');
+    } else {
+      addToast(`Account created! Welcome, ${mapSupabaseUser(data.user).name}.`, 'success');
+    }
   };
 
-  const logout = () => {
+  const logout = async () => {
     sound.playClick();
-    setUser(null);
+    await supabase.auth.signOut();
     setIsProfileDrawerOpen(false);
     addToast('Logged out successfully', 'info');
   };
 
-  // Cart operations
-  const addToCart = (product, color = null, material = null, size = null, quantity = 1) => {
-    sound.playCartSuccess();
+  const requestPasswordReset = async (email) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin,
+    });
+    if (error) {
+      addToast(error.message, 'warning');
+      return false;
+    }
+    addToast(`Password recovery link sent to ${email}`, 'success');
+    return true;
+  };
+
+  const updatePassword = async (newPassword) => {
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) {
+      addToast(error.message, 'warning');
+      return false;
+    }
+    setIsResetPasswordOpen(false);
+    addToast('Password updated. You are signed in.', 'success');
+    return true;
+  };
+
+  const updateAvatar = async (file) => {
+    if (!user) return;
+    const path = `${user.id}/${Date.now()}-${file.name}`;
+    const { error: uploadError } = await supabase.storage.from('avatars').upload(path, file);
+    if (uploadError) {
+      addToast(uploadError.message, 'warning');
+      return;
+    }
+    const { data: publicUrl } = supabase.storage.from('avatars').getPublicUrl(path);
+    const { error: updateError } = await supabase.auth.updateUser({
+      data: { avatar_url: publicUrl.publicUrl },
+    });
+    if (updateError) {
+      addToast(updateError.message, 'warning');
+      return;
+    }
+    setUser((prev) => ({ ...prev, avatar: publicUrl.publicUrl }));
+    addToast('Avatar updated', 'success');
+  };
+
+  // Cart operations — all backed by a real Shopify cart.
+  const addToCart = async (product, color = null, material = null, size = null, quantity = 1) => {
     const chosenColor = color || product.colors[0];
     const chosenMat = material || (product.materials ? product.materials[0] : null);
     const chosenSize = size || (product.sizes ? product.sizes[0] : null);
-    const cartItemId = `${product.id}-${chosenColor.id}-${chosenMat ? chosenMat.id : 'default'}-${chosenSize || 'std'}`;
+    const variant = product.shopifyVariantsBySize?.[chosenSize];
 
-    setCart(prev => {
-      const existing = prev.find(item => item.cartItemId === cartItemId);
-      if (existing) {
-        return prev.map(item =>
-          item.cartItemId === cartItemId
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
-      }
-      return [
-        ...prev,
+    if (!variant) {
+      addToast(`${product.name} isn't available for purchase yet (catalog sync pending)`, 'warning');
+      return;
+    }
+
+    sound.playCartSuccess();
+    setCartLoading(true);
+    try {
+      const lines = [
         {
-          cartItemId,
-          product,
-          color: chosenColor,
-          material: chosenMat,
-          size: chosenSize,
+          merchandiseId: variant.variantId,
           quantity,
-          addedAt: Date.now(),
+          attributes: [
+            { key: 'Color', value: chosenColor.name },
+            ...(chosenMat ? [{ key: 'Material', value: chosenMat.name }] : []),
+          ],
         },
       ];
-    });
 
-    addToast(`Added ${product.name} to Cart`, 'success');
+      let updatedCart;
+      if (shopifyCart) {
+        updatedCart = await shopifyAddLine(shopifyCart.id, lines);
+      } else {
+        updatedCart = await shopifyCreateCart(lines);
+        localStorage.setItem(CART_ID_KEY, updatedCart.id);
+      }
+      setShopifyCart(updatedCart);
+      addToast(`Added ${product.name} to Cart`, 'success');
+    } catch (err) {
+      console.error(err);
+      addToast('Could not add item to cart. Please try again.', 'warning');
+    } finally {
+      setCartLoading(false);
+    }
   };
 
   // Buy Now: adds to cart and opens cart drawer immediately
-  const buyNow = (product, color = null, material = null, size = null, quantity = 1) => {
-    addToCart(product, color, material, size, quantity);
+  const buyNow = async (product, color = null, material = null, size = null, quantity = 1) => {
+    await addToCart(product, color, material, size, quantity);
     setIsCartOpen(true);
     if (selectedProduct) {
       setSelectedProduct(null);
     }
   };
 
-  const removeFromCart = (cartItemId) => {
+  const removeFromCart = async (cartItemId) => {
+    if (!shopifyCart) return;
     sound.playClick();
-    setCart(prev => prev.filter(item => item.cartItemId !== cartItemId));
-    addToast('Removed item from Cart', 'info');
+    setCartLoading(true);
+    try {
+      const updatedCart = await shopifyRemoveLines(shopifyCart.id, [cartItemId]);
+      setShopifyCart(updatedCart);
+      addToast('Removed item from Cart', 'info');
+    } catch (err) {
+      console.error(err);
+      addToast('Could not remove item. Please try again.', 'warning');
+    } finally {
+      setCartLoading(false);
+    }
   };
 
-  const updateCartQuantity = (cartItemId, newQty) => {
+  const updateCartQuantity = async (cartItemId, newQty) => {
+    if (!shopifyCart) return;
     sound.playClick();
     if (newQty <= 0) {
-      removeFromCart(cartItemId);
+      await removeFromCart(cartItemId);
       return;
     }
-    setCart(prev =>
-      prev.map(item =>
-        item.cartItemId === cartItemId ? { ...item, quantity: newQty } : item
-      )
-    );
+    setCartLoading(true);
+    try {
+      const updatedCart = await shopifyUpdateLine(shopifyCart.id, [{ id: cartItemId, quantity: newQty }]);
+      setShopifyCart(updatedCart);
+    } catch (err) {
+      console.error(err);
+      addToast('Could not update quantity. Please try again.', 'warning');
+    } finally {
+      setCartLoading(false);
+    }
   };
 
   const clearCart = () => {
-    setCart([]);
-    setAppliedPromo(null);
+    setShopifyCart(null);
+    localStorage.removeItem(CART_ID_KEY);
   };
 
-  // Wishlist toggle
-  const toggleWishlist = (productId) => {
+  const cart = deriveCartLines(shopifyCart, products);
+  const compareList = products.filter((p) => compareIds.includes(p.id));
+
+  // Wishlist toggle — persisted to Supabase, requires sign-in.
+  const toggleWishlist = async (productId) => {
+    if (!user) {
+      addToast('Sign in to save items to your Wishlist', 'warning');
+      setIsAuthModalOpen(true);
+      return;
+    }
     sound.playClick();
-    setWishlist(prev => {
-      const exists = prev.includes(productId);
-      if (exists) {
-        addToast('Removed from Wishlist', 'info');
-        return prev.filter(id => id !== productId);
-      } else {
-        addToast('Saved to Wishlist', 'success');
-        return [...prev, productId];
-      }
-    });
+    const exists = wishlist.includes(productId);
+    if (exists) {
+      setWishlist((prev) => prev.filter((id) => id !== productId));
+      const { error } = await supabase
+        .from('user_product_lists')
+        .delete()
+        .match({ user_id: user.id, product_id: productId, list_type: 'wishlist' });
+      if (error) addToast(error.message, 'warning');
+      else addToast('Removed from Wishlist', 'info');
+    } else {
+      setWishlist((prev) => [...prev, productId]);
+      const { error } = await supabase
+        .from('user_product_lists')
+        .insert({ user_id: user.id, product_id: productId, list_type: 'wishlist' });
+      if (error) addToast(error.message, 'warning');
+      else addToast('Saved to Wishlist', 'success');
+    }
   };
 
-  // Compare toggle
-  const toggleCompare = (product) => {
+  // Compare toggle — persisted to Supabase, requires sign-in.
+  const toggleCompare = async (product) => {
+    if (!user) {
+      addToast('Sign in to compare products', 'warning');
+      setIsAuthModalOpen(true);
+      return;
+    }
     sound.playClick();
-    setCompareList(prev => {
-      const exists = prev.some(p => p.id === product.id);
-      if (exists) {
-        addToast(`Removed ${product.name} from comparison`, 'info');
-        return prev.filter(p => p.id !== product.id);
-      }
-      if (prev.length >= 4) {
-        addToast('Comparison limit reached (Max 4 products)', 'warning');
-        return prev;
-      }
-      addToast(`Added ${product.name} to comparison`, 'success');
-      return [...prev, product];
-    });
+    const exists = compareIds.includes(product.id);
+    if (exists) {
+      setCompareIds((prev) => prev.filter((id) => id !== product.id));
+      const { error } = await supabase
+        .from('user_product_lists')
+        .delete()
+        .match({ user_id: user.id, product_id: product.id, list_type: 'compare' });
+      if (error) addToast(error.message, 'warning');
+      else addToast(`Removed ${product.name} from comparison`, 'info');
+      return;
+    }
+    if (compareIds.length >= 4) {
+      addToast('Comparison limit reached (Max 4 products)', 'warning');
+      return;
+    }
+    setCompareIds((prev) => [...prev, product.id]);
+    const { error } = await supabase
+      .from('user_product_lists')
+      .insert({ user_id: user.id, product_id: product.id, list_type: 'compare' });
+    if (error) addToast(error.message, 'warning');
+    else addToast(`Added ${product.name} to comparison`, 'success');
   };
 
   // Open 3D Detail Modal
@@ -295,33 +487,12 @@ export function StoreProvider({ children }) {
     setIsAROpen(true);
   };
 
-  // Apply Promo code
-  const applyPromoCode = (code) => {
-    sound.playClick();
-    const cleanCode = code.trim().toUpperCase();
-    if (PROMO_CODES[cleanCode]) {
-      setAppliedPromo({ code: cleanCode, ...PROMO_CODES[cleanCode] });
-      confetti({ particleCount: 60, spread: 60, origin: { y: 0.8 } });
-      addToast(`Promo code ${cleanCode} applied successfully!`, 'success');
-      return true;
-    } else {
-      addToast('Invalid promo code. Try AURA20 or CYBER3D', 'warning');
-      return false;
-    }
-  };
-
-  // Computed Cart Totals
-  const cartSubtotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-  let discountAmount = 0;
-  if (appliedPromo) {
-    if (appliedPromo.discountPercent) {
-      discountAmount = (cartSubtotal * appliedPromo.discountPercent) / 100;
-    } else if (appliedPromo.discountAmount) {
-      discountAmount = Math.min(cartSubtotal, appliedPromo.discountAmount);
-    }
-  }
-  const cartTotal = Math.max(0, cartSubtotal - discountAmount);
-  const cartItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  // Computed Cart Totals — read straight from Shopify's cart (it owns tax/
+  // discount/shipping math for real). Discount codes are entered on Shopify's
+  // own checkout page now, not here.
+  const cartSubtotal = shopifyCart ? parseFloat(shopifyCart.cost.subtotalAmount.amount) : 0;
+  const cartTotal = shopifyCart ? parseFloat(shopifyCart.cost.totalAmount.amount) : 0;
+  const cartItemsCount = shopifyCart ? shopifyCart.totalQuantity : 0;
 
   // Filtered & Sorted Products
   const filteredProducts = products.filter(p => {
@@ -361,15 +532,18 @@ export function StoreProvider({ children }) {
         products,
         filteredProducts,
         user,
+        authLoading,
         isAuthModalOpen,
         authMode,
         isProfileDrawerOpen,
+        isResetPasswordOpen,
+        setIsResetPasswordOpen,
         cart,
+        cartLoading,
         cartItemsCount,
         cartSubtotal,
-        discountAmount,
         cartTotal,
-        appliedPromo,
+        checkoutUrl: shopifyCart?.checkoutUrl || null,
         wishlist,
         compareList,
         isCartOpen,
@@ -401,6 +575,9 @@ export function StoreProvider({ children }) {
         login,
         signup,
         logout,
+        requestPasswordReset,
+        updatePassword,
+        updateAvatar,
         addToCart,
         buyNow,
         removeFromCart,
@@ -411,7 +588,6 @@ export function StoreProvider({ children }) {
         openProductDetail,
         closeProductDetail,
         openARSimulator,
-        applyPromoCode,
         addToast,
       }}
     >

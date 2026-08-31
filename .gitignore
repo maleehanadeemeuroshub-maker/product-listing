@@ -7,7 +7,6 @@ dist-ssr
 .env.*
 !.env.example
 
-data/db.json
 
 .vercel
 
