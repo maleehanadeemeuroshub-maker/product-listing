@@ -35,4 +35,4 @@ create policy "Avatar images are publicly readable"
 drop policy if exists "Users upload their own avatar" on storage.objects;
 create policy "Users upload their own avatar"
   on storage.objects for insert
-  with check (bucket_id = 'avatars' and storage.foldername(name)[1] = auth.uid()::text);
+  with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
