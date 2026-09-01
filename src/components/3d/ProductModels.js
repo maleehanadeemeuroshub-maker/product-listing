@@ -92,13 +92,23 @@ function createPhoneScreenTexture() {
   ctx.fillText('MON, AUG 24 • 72°F CLEAR', 256, 320);
 
   // App grid simulation
+  // Manual rounded-rect path (avoids ctx.roundRect, unsupported on older mobile browsers)
+  const drawRoundedRect = (x, y, w, h, r) => {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  };
+
   for (let row = 0; row < 4; row++) {
     for (let col = 0; col < 4; col++) {
       const x = 70 + col * 100;
       const y = 620 + row * 90;
       ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
-      ctx.beginPath();
-      ctx.roundRect(x, y, 65, 65, 14);
+      drawRoundedRect(x, y, 65, 65, 14);
       ctx.fill();
     }
   }

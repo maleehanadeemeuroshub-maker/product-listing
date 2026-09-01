@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useStore } from '../../context/StoreContext';
 import { useTheme } from '../../context/ThemeContext';
 import {
@@ -37,6 +37,33 @@ export default function Navbar() {
   } = useStore();
 
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
+  const lastScrollYRef = useRef(0);
+  const tickingRef = useRef(false);
+
+  useEffect(() => {
+    lastScrollYRef.current = window.scrollY;
+
+    const handleScroll = () => {
+      if (tickingRef.current) return;
+      tickingRef.current = true;
+
+      requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+        const lastScrollY = lastScrollYRef.current;
+        const scrolledDown = currentScrollY > lastScrollY;
+        const pastThreshold = currentScrollY > 96;
+
+        setIsHeaderHidden(scrolledDown && pastThreshold);
+
+        lastScrollYRef.current = currentScrollY;
+        tickingRef.current = false;
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const scrollToSection = (id) => {
     sound.playClick();
@@ -47,7 +74,11 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full glass-panel border-b border-slate-900/10 backdrop-blur-xl">
+    <header
+      className={`sticky top-0 z-40 w-full glass-panel border-b border-slate-900/10 backdrop-blur-xl transition-transform duration-300 ease-in-out ${
+        isHeaderHidden ? '-translate-y-full' : 'translate-y-0'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-2 sm:gap-4">
 
         {/* Brand Logo */}
