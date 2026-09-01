@@ -197,7 +197,7 @@ export default function Hero3DStage({ product, activeColor, className = '' }) {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className={`relative w-full h-full min-h-[480px] lg:min-h-[580px] select-none flex items-center justify-center ${className}`}
+      className={`relative w-full h-full min-h-[450px] sm:min-h-[520px] lg:min-h-[580px] select-none flex items-center justify-center ${className}`}
     >
       {/* Background Radial Glow */}
       <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 via-purple-500/10 to-transparent rounded-3xl blur-3xl pointer-events-none -z-10" />

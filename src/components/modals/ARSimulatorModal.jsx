@@ -28,21 +28,21 @@ export default function ARSimulatorModal() {
   if (!isAROpen || !arProduct) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/85 backdrop-blur-xl animate-in fade-in duration-200">
-      
-      <div className="relative w-full max-w-4xl rounded-3xl glass-panel border border-purple-500/30 bg-white/95 p-6 space-y-6 shadow-2xl">
-        
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto bg-white/85 backdrop-blur-xl animate-in fade-in duration-200">
+
+      <div className="relative w-full max-w-4xl rounded-3xl glass-panel border border-purple-500/30 bg-white/95 p-4 sm:p-6 space-y-6 shadow-2xl my-auto max-h-[95vh] overflow-y-auto">
+
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-slate-900/10">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/40">
+        <div className="flex items-center justify-between gap-3 pb-4 border-b border-slate-900/10">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="p-2.5 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/40 shrink-0">
               <Box className="w-5 h-5" />
             </div>
-            <div>
-              <h2 className="text-lg font-bold font-['Space_Grotesk'] text-slate-900">
+            <div className="min-w-0">
+              <h2 className="text-base sm:text-lg font-bold font-['Space_Grotesk'] text-slate-900 truncate">
                 AR & Physical Scale Simulator
               </h2>
-              <p className="text-xs text-slate-500 font-mono">
+              <p className="text-xs text-slate-500 font-mono truncate">
                 {arProduct.name} • 1:1 True Dimensional Projection
               </p>
             </div>
@@ -53,7 +53,7 @@ export default function ARSimulatorModal() {
               sound.playClick();
               setIsAROpen(false);
             }}
-            className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-white/5"
+            className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-white/5 shrink-0"
           >
             <X className="w-5 h-5" />
           </button>

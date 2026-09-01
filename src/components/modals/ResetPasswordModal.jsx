@@ -30,8 +30,8 @@ export default function ResetPasswordModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/80 backdrop-blur-xl animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md rounded-3xl glass-panel border border-cyan-500/30 bg-white/95 p-6 sm:p-8 space-y-6 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-white/80 backdrop-blur-xl animate-in fade-in duration-200">
+      <div className="relative w-full max-w-md rounded-3xl glass-panel border border-cyan-500/30 bg-white/95 p-6 sm:p-8 space-y-6 shadow-2xl my-auto max-h-[95vh] overflow-y-auto">
 
         <div className="flex items-center justify-between pb-3 border-b border-slate-900/10">
           <div className="flex items-center gap-2.5">

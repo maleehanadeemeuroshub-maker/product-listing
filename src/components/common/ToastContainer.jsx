@@ -8,7 +8,7 @@ export default function ToastContainer() {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none">
+    <div className="fixed bottom-4 sm:bottom-6 left-4 right-4 sm:left-auto sm:right-6 z-50 flex flex-col items-stretch sm:items-end gap-2 pointer-events-none">
       {toasts.map(toast => {
         const isSuccess = toast.type === 'success';
         const isWarning = toast.type === 'warning';
@@ -16,7 +16,7 @@ export default function ToastContainer() {
         return (
           <div
             key={toast.id}
-            className={`pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-2xl glass-panel border shadow-2xl backdrop-blur-xl animate-in slide-in-from-bottom-5 duration-300 ${
+            className={`pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-2xl glass-panel border shadow-2xl backdrop-blur-xl animate-in slide-in-from-bottom-5 duration-300 w-full sm:w-auto sm:max-w-sm ${
               isSuccess
                 ? 'border-emerald-500/40 bg-emerald-950/80 text-emerald-200'
                 : isWarning

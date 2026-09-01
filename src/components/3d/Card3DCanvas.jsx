@@ -126,7 +126,7 @@ export default function Card3DCanvas({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full h-full min-h-[200px] flex items-center justify-center select-none overflow-hidden ${className}`}
+      className={`relative w-full h-full flex items-center justify-center select-none overflow-hidden ${className}`}
     >
       <canvas ref={canvasRef} className="w-full h-full block" />
     </div>

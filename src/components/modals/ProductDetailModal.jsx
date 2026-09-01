@@ -403,7 +403,7 @@ export default function ProductDetailModal() {
                 <span className="text-xs font-mono uppercase tracking-widest text-slate-500 font-semibold block">
                   Related Spatial Devices
                 </span>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {relatedProducts.map(rel => (
                     <div
                       key={rel.id}

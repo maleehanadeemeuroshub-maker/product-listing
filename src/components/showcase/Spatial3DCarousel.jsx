@@ -15,6 +15,17 @@ import { sound } from '../../utils/audio';
 export default function Spatial3DCarousel({ products }) {
   const { openProductDetail, addToCart } = useStore();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [viewportWidth, setViewportWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 1280
+  );
+
+  useEffect(() => {
+    const handleResize = () => setViewportWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const spread = viewportWidth < 480 ? 130 : viewportWidth < 640 ? 170 : viewportWidth < 1024 ? 210 : 260;
 
   const total = products.length;
   if (total === 0) return null;
@@ -61,7 +72,7 @@ export default function Spatial3DCarousel({ products }) {
           if (!isVisible) return null;
 
           // 3D Matrix Transformations
-          const translateX = offset * 260; // horizontal spread
+          const translateX = offset * spread; // horizontal spread, scaled to viewport
           const translateZ = isCenter ? 100 : -Math.abs(offset) * 140; // depth
           const rotateY = offset * -25; // angle toward center
           const opacity = isCenter ? 1 : Math.max(0.2, 1 - Math.abs(offset) * 0.4);
