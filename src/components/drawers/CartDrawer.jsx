@@ -8,6 +8,7 @@ import {
   Minus,
   ArrowRight,
   Tag,
+  CheckCircle2,
 } from 'lucide-react';
 import { sound } from '../../utils/audio';
 
