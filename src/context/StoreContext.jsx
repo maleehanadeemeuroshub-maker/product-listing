@@ -139,6 +139,29 @@ export function StoreProvider({ children }) {
     sound.enabled = soundEnabled;
   }, [soundEnabled]);
 
+  // Detect the redirect back from Stripe Checkout (see `checkout` below).
+  // The order itself is created by the /api/webhooks/stripe handler, not
+  // here — a customer isn't guaranteed to land back on this page after
+  // paying, so this effect is just UI feedback, never the source of truth.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const checkoutStatus = params.get('checkout');
+    if (!checkoutStatus) return;
+
+    if (checkoutStatus === 'success') {
+      clearCart();
+      confetti({ particleCount: 150, spread: 90 });
+      addToast('Payment successful! A confirmation email is on its way.', 'success');
+    } else if (checkoutStatus === 'cancel') {
+      addToast('Checkout cancelled — your cart is still saved.', 'info');
+    }
+
+    params.delete('checkout');
+    params.delete('session_id');
+    const query = params.toString();
+    window.history.replaceState({}, '', `${window.location.pathname}${query ? `?${query}` : ''}`);
+  }, []);
+
   // Add toast notification
   const addToast = (message, type = 'info') => {
     const id = Date.now();
@@ -263,6 +286,60 @@ export function StoreProvider({ children }) {
     });
 
     addToast(`Added ${product.name} to Cart`, 'success');
+
+    // Best-effort cart-added notification email — never blocks the cart update.
+    if (user) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (!session) return;
+        fetch('/api/notify/cart-added', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+          body: JSON.stringify({ productName: product.name, price: product.price }),
+        }).catch(() => {});
+      });
+    }
+  };
+
+  // Real checkout: creates a Stripe Checkout Session server-side (which
+  // re-validates prices from the catalog) and redirects there to actually
+  // collect payment. The order + confirmation email are created by the
+  // /api/webhooks/stripe handler once Stripe confirms the payment — not
+  // here, and not on the redirect-back page (see the effect above).
+  const checkout = async () => {
+    if (!user) {
+      addToast('Sign in to checkout', 'warning');
+      setIsAuthModalOpen(true);
+      return false;
+    }
+    if (cart.length === 0) return false;
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      addToast('Your session expired. Please sign in again.', 'warning');
+      setIsAuthModalOpen(true);
+      return false;
+    }
+
+    try {
+      const res = await fetch('/api/checkout/create-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({
+          items: cart.map((item) => ({ id: item.product.id, quantity: item.quantity })),
+          couponCode: appliedPromo?.code || null,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        addToast(data.message || 'Checkout failed. Please try again.', 'warning');
+        return false;
+      }
+      window.location.href = data.url;
+      return true;
+    } catch (err) {
+      addToast('Could not start checkout. Please try again.', 'warning');
+      return false;
+    }
   };
 
   // Buy Now: adds to cart and opens cart drawer immediately
@@ -493,6 +570,7 @@ export function StoreProvider({ children }) {
         updateAvatar,
         addToCart,
         buyNow,
+        checkout,
         removeFromCart,
         updateCartQuantity,
         clearCart,

@@ -27,5 +27,14 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
+    // Forwards /api/* to the local Express dev server (see server/dev.js —
+    // start it with `npm run dev:api`, or both together with `npm run dev:full`).
+    // In production this isn't needed: Vercel serves api/ natively at the same paths.
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8787',
+        changeOrigin: true,
+      },
+    },
   },
 });

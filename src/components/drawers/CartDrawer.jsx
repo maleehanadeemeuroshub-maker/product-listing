@@ -8,10 +8,8 @@ import {
   Minus,
   ArrowRight,
   Tag,
-  CheckCircle2,
 } from 'lucide-react';
 import { sound } from '../../utils/audio';
-import confetti from 'canvas-confetti';
 
 export default function CartDrawer() {
   const {
@@ -26,12 +24,11 @@ export default function CartDrawer() {
     updateCartQuantity,
     removeFromCart,
     applyPromoCode,
-    clearCart,
+    checkout,
   } = useStore();
 
   const [promoInput, setPromoInput] = useState('');
   const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [checkoutSuccess, setCheckoutSuccess] = useState(false);
 
   if (!isCartOpen) return null;
 
@@ -46,23 +43,14 @@ export default function CartDrawer() {
     }
   };
 
-  const handleCheckout = () => {
+  // Redirects to a real Stripe Checkout page — the order + confirmation
+  // email are created by the webhook once payment actually succeeds there,
+  // not here (see checkout() in StoreContext).
+  const handleCheckout = async () => {
     sound.playCartSuccess();
     setIsCheckingOut(true);
-    setTimeout(() => {
-      setIsCheckingOut(false);
-      setCheckoutSuccess(true);
-      confetti({
-        particleCount: 120,
-        spread: 80,
-        origin: { y: 0.6 },
-      });
-      setTimeout(() => {
-        clearCart();
-        setCheckoutSuccess(false);
-        setIsCartOpen(false);
-      }, 3000);
-    }, 1500);
+    const started = await checkout();
+    if (!started) setIsCheckingOut(false);
   };
 
   return (
@@ -119,19 +107,7 @@ export default function CartDrawer() {
 
           {/* Cart Item List */}
           <div className="flex-1 overflow-y-auto pr-1 space-y-3 py-2">
-            {checkoutSuccess ? (
-              <div className="py-16 text-center space-y-4">
-                <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto animate-bounce">
-                  <CheckCircle2 className="w-8 h-8" />
-                </div>
-                <h3 className="text-xl font-bold font-['Space_Grotesk'] text-slate-900">
-                  Order Successfully Placed!
-                </h3>
-                <p className="text-xs text-slate-500 max-w-xs mx-auto">
-                  Thank you for your order. Tracking telemetry and firmware activation keys have been dispatched to your email.
-                </p>
-              </div>
-            ) : cart.length === 0 ? (
+            {cart.length === 0 ? (
               <div className="py-20 text-center space-y-3">
                 <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mx-auto">
                   <ShoppingBag className="w-7 h-7" />
@@ -207,7 +183,7 @@ export default function CartDrawer() {
           </div>
 
           {/* Drawer Footer & Checkout Controls */}
-          {cart.length > 0 && !checkoutSuccess && (
+          {cart.length > 0 && (
             <div className="pt-4 border-t border-slate-900/10 space-y-4 shrink-0">
 
               {/* Promo Code Form */}
