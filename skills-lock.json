@@ -12,6 +12,12 @@
       "sourceType": "github",
       "skillPath": "skills/shopify-storefront-graphql/SKILL.md",
       "computedHash": "91ba2f4cf38fcf2df97347e2ce7ea1d1d6f1a716d9022247afdcfb74917858f4"
+    },
+    "stripe-best-practices": {
+      "source": "stripe/ai",
+      "sourceType": "github",
+      "skillPath": "skills/stripe-best-practices/SKILL.md",
+      "computedHash": "5017941782c4196338f08f045ca6a8203cc739c4d467a669d4cba38858c34f7a"
     }
   }
 }

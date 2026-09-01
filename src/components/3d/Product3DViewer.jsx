@@ -55,6 +55,10 @@ export default function Product3DViewer({
   useEffect(() => {
     if (!canvasRef.current || !containerRef.current) return;
 
+    const canvas = canvasRef.current;
+    let disposed = false;
+
+    const buildScene = () => {
     const width = containerRef.current.clientWidth;
     const height = containerRef.current.clientHeight || 450;
 
@@ -69,7 +73,7 @@ export default function Product3DViewer({
 
     // 3. Renderer with antialiasing and alpha transparency
     const renderer = new THREE.WebGLRenderer({
-      canvas: canvasRef.current,
+      canvas,
       alpha: true,
       antialias: true,
       preserveDrawingBuffer: true, // enables screenshot capture
@@ -168,21 +172,42 @@ export default function Product3DViewer({
     };
 
     animFrameIdRef.current = requestAnimationFrame(animate);
+    };
 
     // Handle Window Resize
     const handleResize = () => {
-      if (!containerRef.current || !renderer || !camera) return;
+      if (!containerRef.current || !rendererRef.current || !cameraRef.current) return;
       const w = containerRef.current.clientWidth;
       const h = containerRef.current.clientHeight || 450;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
+      cameraRef.current.aspect = w / h;
+      cameraRef.current.updateProjectionMatrix();
+      rendererRef.current.setSize(w, h);
     };
 
+    // Browsers cap concurrent WebGL contexts; opening DevTools (extra GPU/
+    // compositor overhead) can force-lose one. Rebuild instead of staying blank.
+    const handleContextLost = (event) => {
+      event.preventDefault();
+      if (animFrameIdRef.current) cancelAnimationFrame(animFrameIdRef.current);
+    };
+
+    const handleContextRestored = () => {
+      if (disposed) return;
+      if (rendererRef.current) rendererRef.current.dispose();
+      buildScene();
+    };
+
+    canvas.addEventListener('webglcontextlost', handleContextLost, false);
+    canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
+
+    buildScene();
     window.addEventListener('resize', handleResize);
 
     return () => {
+      disposed = true;
       window.removeEventListener('resize', handleResize);
+      canvas.removeEventListener('webglcontextlost', handleContextLost);
+      canvas.removeEventListener('webglcontextrestored', handleContextRestored);
       if (animFrameIdRef.current) {
         cancelAnimationFrame(animFrameIdRef.current);
       }
