@@ -71,6 +71,45 @@ function layout({ preheader = "", heading, bodyHtml, ctaText, ctaUrl, footerNote
 </html>`;
 }
 
+export function welcomeEmailTemplate({ fullName, email }) {
+  const html = layout({
+    preheader: `Welcome to ${BRAND}, ${fullName}!`,
+    heading: `Welcome to ${BRAND}!`,
+    bodyHtml: `<p>Hi ${escapeHtml(fullName)},</p>
+      <p>Your account (<strong style="color:${TEXT};">${escapeHtml(email)}</strong>) is ready. Thanks for joining ${BRAND} — explore the full spatial hardware catalog in interactive 3D.</p>
+      <p style="color:${MUTED};font-size:13px;">If you didn't create this account, you can safely ignore this email.</p>`,
+    ctaText: "Start Exploring",
+    ctaUrl: process.env.CLIENT_URL || "http://localhost:5173",
+  });
+  return {
+    subject: `Welcome to ${BRAND}!`,
+    html,
+    text: `Hi ${fullName}, welcome to ${BRAND}! Your account (${email}) is ready.`,
+  };
+}
+
+export function loginNotificationEmailTemplate({ fullName, email, loginAt }) {
+  const when = new Date(loginAt || Date.now()).toLocaleString("en-US", {
+    dateStyle: "long",
+    timeStyle: "short",
+  });
+  const html = layout({
+    preheader: `New sign-in to your ${BRAND} account.`,
+    heading: "New Sign-In",
+    bodyHtml: `<p>Hi ${escapeHtml(fullName)},</p>
+      <p>We noticed a new sign-in to your ${BRAND} account (<strong style="color:${TEXT};">${escapeHtml(email)}</strong>).</p>
+      <p style="margin:16px 0 4px;font-size:13px;color:${MUTED};">Date &amp; time</p>
+      <p style="margin:0 0 12px;font-size:13px;color:${TEXT};">${escapeHtml(when)}</p>
+      <p style="color:${MUTED};font-size:13px;">If this was you, no action is needed. If you don't recognize this activity, reset your password immediately from the account menu.</p>`,
+    footerNote: `Security notice from ${BRAND}. You're receiving this because sign-in alerts are on for your account.`,
+  });
+  return {
+    subject: `New sign-in to your ${BRAND} account`,
+    html,
+    text: `Hi ${fullName}, a new sign-in to your ${BRAND} account (${email}) was recorded at ${when}. If this wasn't you, reset your password immediately.`,
+  };
+}
+
 export function cartAddedEmailTemplate({ fullName, productName, price }) {
   const html = layout({
     preheader: `${productName} is waiting in your cart.`,

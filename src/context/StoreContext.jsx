@@ -171,6 +171,15 @@ export function StoreProvider({ children }) {
     }, 3500);
   };
 
+  // Best-effort notification email — never blocks the auth flow that triggered it.
+  const notify = (path, session) => {
+    if (!session) return;
+    fetch(path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+    }).catch(() => {});
+  };
+
   // Auth Functions — all backed by real Supabase Auth.
   const login = async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -182,6 +191,7 @@ export function StoreProvider({ children }) {
     setIsAuthModalOpen(false);
     confetti({ particleCount: 50, spread: 50 });
     addToast(`Welcome back, ${mapSupabaseUser(data.user).name}!`, 'success');
+    notify('/api/notify/login', data.session);
   };
 
   const signup = async (name, email, password) => {
@@ -201,6 +211,7 @@ export function StoreProvider({ children }) {
       addToast('Check your email to confirm your account.', 'info');
     } else {
       addToast(`Account created! Welcome, ${mapSupabaseUser(data.user).name}.`, 'success');
+      notify('/api/notify/welcome', data.session);
     }
   };
 

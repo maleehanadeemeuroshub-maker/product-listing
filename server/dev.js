@@ -47,6 +47,8 @@ function mount(method, routePath, importPath) {
 
 mount("post", "/api/checkout/create-session", "../api/checkout/create-session.js");
 mount("post", "/api/notify/cart-added", "../api/notify/cart-added.js");
+mount("post", "/api/notify/welcome", "../api/notify/welcome.js");
+mount("post", "/api/notify/login", "../api/notify/login.js");
 mount("get", "/api/dev/inbox", "../api/dev/inbox.js");
 
 app.use("/api", (req, res) => res.status(404).json({ message: "Not found" }));
